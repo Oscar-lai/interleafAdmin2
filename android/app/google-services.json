@@ -1,0 +1,118 @@
+{
+  "project_info": {
+    "project_number": "320495149858",
+    "project_id": "dev-interleaf",
+    "storage_bucket": "dev-interleaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320495149858:android:946ec40f5045b660837b7b",
+        "android_client_info": {
+          "package_name": "com.interleaf"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqqmDn_6_KrozYRo8OJZZN4HmasL5njoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "320495149858-nh27j5plpkgpgf26b00rv14djne3n0uh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.Interleaf.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320495149858:android:8511ee64792d8c1f837b7b",
+        "android_client_info": {
+          "package_name": "com.interleafadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqqmDn_6_KrozYRo8OJZZN4HmasL5njoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "320495149858-nh27j5plpkgpgf26b00rv14djne3n0uh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.Interleaf.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:320495149858:android:680fa43237a27413837b7b",
+        "android_client_info": {
+          "package_name": "com.interleafadmin_2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqqmDn_6_KrozYRo8OJZZN4HmasL5njoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "320495149858-89ef2p0vioqlr0mgk5sghg9hfn1fs0k3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "320495149858-nh27j5plpkgpgf26b00rv14djne3n0uh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "io.Interleaf.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
