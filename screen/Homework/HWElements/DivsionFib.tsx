@@ -2,6 +2,7 @@ import {customAlphabet} from 'nanoid/non-secure';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {MYCOLOR} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 
 interface IDivisionFib {
   sandwich: {
@@ -44,9 +45,12 @@ export const DivisionFib: React.FC<IDivisionFib> = ({
         {/* First layers is the quotient(answer) at the top */}
         <View style={styles.QuotientWrapper}>
           <View style={styles.Wrapper}>
-            {typeof sandwich.bread['1'] === 'string' && (
-              <Text style={styles.DivisionText}>{sandwich.bread['1']}</Text>
-            )}
+            {typeof sandwich.bread['1'] === 'string' &&
+              [...Array(sandwich.bread['1'].length)].map((x, index) => (
+                <Text style={styles.DivisionText} key={index}>
+                  {sandwich.bread['1'][index]}
+                </Text>
+              ))}
             {Array.isArray(sandwich.bread['1']) &&
               sandwich.bread['1'].map((x, index) =>
                 x === '' ? (
@@ -167,7 +171,9 @@ export const DivisionFib: React.FC<IDivisionFib> = ({
               <View
                 style={[
                   styles.Line,
-                  {width: sandwich.bread[myKeys[index + 3]].length * 30},
+                  DeviceInfo.isTablet()
+                    ? {width: sandwich.bread[myKeys[index + 3]].length * 53}
+                    : {width: sandwich.bread[myKeys[index + 3]].length * 30},
                 ]}
               />
             )}
@@ -217,7 +223,7 @@ const SmallDivisionInput: React.FC<IDivisionInputBox> = ({
 
 const styles = StyleSheet.create({
   BigWrapper: {
-    marginTop: 15,
+    marginTop: DeviceInfo.isTablet() ? 30 : 15,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -237,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: DeviceInfo.isTablet() ? 10 : 5,
   },
   Wrapper: {
     flexDirection: 'row',
@@ -253,27 +259,29 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderTopWidth: 3,
+    borderBottomWidth: DeviceInfo.isTablet() ? 0 : 1,
+    borderTopWidth: DeviceInfo.isTablet() ? 5 : 3,
     borderTopColor: '#707070',
     borderBottomColor: 'transparent',
-    paddingLeft: 5,
+    paddingLeft: DeviceInfo.isTablet() ? 10 : 5,
   },
   DivisorWrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 3,
+    borderRightWidth: DeviceInfo.isTablet() ? 5 : 3,
     borderRightColor: '#707070',
-    borderBottomRightRadius: 12,
-    paddingHorizontal: 5,
+    borderBottomRightRadius: DeviceInfo.isTablet() ? 20 : 12,
+    paddingHorizontal: DeviceInfo.isTablet() ? 8 : 5,
     marginRight: -2,
     marginTop: -2,
+    paddingVertical: DeviceInfo.isTablet() ? 5 : 0,
   },
   DivisionText: {
-    margin: 5,
-    width: 22,
-    fontSize: 30,
+    margin: DeviceInfo.isTablet() ? 10 : 5,
+    width: DeviceInfo.isTablet() ? 35 : 22,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
+
     color: '#707070',
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
@@ -281,28 +289,28 @@ const styles = StyleSheet.create({
   SmallDivisionInputBox: {
     backgroundColor: '#FFF',
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
     fontFamily: 'Poppins-Bold',
-    marginVertical: 5,
-    marginHorizontal: 4,
-    width: 24,
-    height: 36,
+    marginVertical: DeviceInfo.isTablet() ? 10 : 5,
+    marginHorizontal: DeviceInfo.isTablet() ? 8 : 4,
+    width: DeviceInfo.isTablet() ? 40 : 24,
+    height: DeviceInfo.isTablet() ? 55 : 43,
     color: '#707070',
-    borderRadius: 8,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 8,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 5 : 3,
     shadowOpacity: 0.5,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   Line: {
-    height: 3,
+    height: DeviceInfo.isTablet() ? 6 : 3,
     backgroundColor: '#707070',
-    marginVertical: 5,
+    marginVertical: DeviceInfo.isTablet() ? 9 : 5,
     transform: [{translateX: -2}],
     borderRadius: 20,
   },

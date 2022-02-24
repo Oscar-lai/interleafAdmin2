@@ -18,6 +18,7 @@ import ShortDivision from './HWElements/ShortDivision';
 import {Straight} from './HWElements/Straight';
 import Table from './HWElements/Table';
 import {TakePhotoDisplay} from './HWElements/TakePhotoDisplay';
+import DeviceInfo from 'react-native-device-info';
 
 interface IClassifier {
   sandwich: Sandwich;
@@ -165,7 +166,15 @@ const Classifier: React.FC<IClassifier> = ({
     case 'img': {
       const imgURL = Object.values(sandwich.bread);
       formattedLine = (
-        <View style={styles.Container}>
+        <View
+          style={[
+            styles.Container,
+            {
+              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
+              paddingVertical: DeviceInfo.isTablet() ? 35 : 25,
+              backgroundColor: '#FFF',
+            },
+          ]}>
           <ImageDisplay imgURL={imgURL} type="img" />
         </View>
       );
@@ -175,7 +184,15 @@ const Classifier: React.FC<IClassifier> = ({
       const imgURL = Object.values(sandwich.bread);
       console.log('im in res img');
       formattedLine = (
-        <View style={styles.Container}>
+        <View
+          style={[
+            styles.Container,
+            {
+              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
+              paddingVertical: DeviceInfo.isTablet() ? 35 : 25,
+              backgroundColor: '#FFF',
+            },
+          ]}>
           <ImageDisplay imgURL={imgURL} type="res" />
         </View>
       );
@@ -184,18 +201,36 @@ const Classifier: React.FC<IClassifier> = ({
     case 'img-x': {
       const imgURL = Object.values(sandwich.bread);
       formattedLine = (
-        // <View style={styles.Container}>
-        <ImageDisplay imgURL={imgURL} type="img" zoom="x" />
-        // </View>
+        <View
+          style={[
+            styles.Container,
+            {
+              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
+              paddingVertical: DeviceInfo.isTablet() ? 20 : 10,
+              zIndex: 99,
+              backgroundColor: '#FFF',
+            },
+          ]}>
+          <ImageDisplay imgURL={imgURL} type="img" zoom="x" />
+        </View>
       );
       break;
     }
     case 'img-y': {
       const imgURL = Object.values(sandwich.bread);
       formattedLine = (
-        // <View style={styles.Container}>
-        <ImageDisplay imgURL={imgURL} type="img" zoom="y" />
-        // </View>
+        <View
+          style={[
+            styles.Container,
+            {
+              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
+              paddingVertical: DeviceInfo.isTablet() ? 20 : 10,
+              zIndex: 99,
+              backgroundColor: '#FFF',
+            },
+          ]}>
+          <ImageDisplay imgURL={imgURL} type="img" zoom="y" />
+        </View>
       );
       break;
     }
@@ -276,19 +311,19 @@ export default Classifier;
 
 const styles = StyleSheet.create({
   QuestionText: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     fontFamily: myFont.GEN,
     color: '#707070',
   },
   Container: {
-    marginTop: 20,
+    marginTop: DeviceInfo.isTablet() ? 40 : 20,
     width: '100%',
-    paddingHorizontal: 40,
+    paddingHorizontal: DeviceInfo.isTablet() ? 80 : 40,
     // for making this invisible when img-x / img-y is expanded
     zIndex: -1,
   },
   BarChartContainer: {
-    marginTop: 35,
+    marginTop: DeviceInfo.isTablet() ? 60 : 35,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',

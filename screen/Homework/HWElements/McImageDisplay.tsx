@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {GetImageURL} from '../../../firebase/Config';
 
+import DeviceInfo from 'react-native-device-info';
+
 interface IMCImageDisplay {
   url: string;
 }
@@ -21,10 +23,6 @@ export const MCImageDisplay: React.FC<IMCImageDisplay> = ({url}) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log('my MC url is: ' + URL);
-  }, [URL]);
-
   return (
     <View
       style={[styles.container, URL ? {backgroundColor: 'transparent'} : {}]}>
@@ -39,12 +37,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e1e4e8',
     height: '100%',
-    minHeight: 80,
+    minHeight: DeviceInfo.isTablet() ? 120 : 80,
     flex: 1,
     width: '100%',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   image: {
-    height: '80%',
+    height: DeviceInfo.isTablet() ? '80%' : '90%',
+    width: '80%',
   },
 });

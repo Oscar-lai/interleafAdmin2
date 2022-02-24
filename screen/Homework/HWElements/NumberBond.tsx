@@ -5,6 +5,7 @@ import {TextInput} from 'react-native-gesture-handler';
 import {Line} from 'react-native-svg';
 import {Filling, Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR, myFont} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 
 interface INumberBond {
   sandwich: Sandwich;
@@ -152,7 +153,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: DeviceInfo.isTablet() ? 30 : 15,
   },
   NumberBondWrapper: {
     width: '100%',
@@ -175,33 +176,33 @@ const styles = StyleSheet.create({
     zIndex: 0,
   },
   Ball: {
-    width: 80,
-    height: 80,
+    width: DeviceInfo.isTablet() ? 140 : 80,
+    height: DeviceInfo.isTablet() ? 140 : 80,
     flexShrink: 0,
-    borderRadius: 50,
-    borderWidth: 5,
+    borderRadius: 70,
+    borderWidth: DeviceInfo.isTablet() ? 10 : 5,
     borderColor: '#B2B2B2',
-    marginVertical: 10,
-    marginHorizontal: 24,
+    marginVertical: DeviceInfo.isTablet() ? 20 : 10,
+    marginHorizontal: DeviceInfo.isTablet() ? 40 : 24,
     backgroundColor: '#FFF',
     zIndex: 100,
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize: 28,
-    lineHeight: 80,
+    fontSize: DeviceInfo.isTablet() ? 40 : 28,
+    lineHeight: DeviceInfo.isTablet() ? 100 : 80,
   },
   BallInputBox: {
-    width: 80,
-    height: 80,
+    width: DeviceInfo.isTablet() ? 140 : 80,
+    height: DeviceInfo.isTablet() ? 140 : 80,
     flexShrink: 0,
-    borderRadius: 50,
-    borderWidth: 5,
+    borderRadius: 70,
+    borderWidth: DeviceInfo.isTablet() ? 10 : 5,
     borderColor: '#FFF',
     color: '#707070',
     fontFamily: 'Poppins-Bold',
-    fontSize: 36,
-    marginVertical: 10,
-    marginHorizontal: 24,
+    fontSize: DeviceInfo.isTablet() ? 50 : 36,
+    marginVertical: DeviceInfo.isTablet() ? 20 : 10,
+    marginHorizontal: DeviceInfo.isTablet() ? 40 : 24,
     backgroundColor: '#FFF',
     zIndex: 100,
     textAlign: 'center',
@@ -212,13 +213,13 @@ const styles = StyleSheet.create({
       width: 0,
       height: 3,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.3,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
   },
   Line: {
-    width: 120,
-    height: 5,
+    width: DeviceInfo.isTablet() ? 240 : 120,
+    height: DeviceInfo.isTablet() ? 10 : 5,
     backgroundColor: '#B2B2B2',
     position: 'absolute',
     zIndex: -1,
@@ -226,6 +227,6 @@ const styles = StyleSheet.create({
   BallText: {
     color: '#707070',
     fontFamily: 'Poppins-Bold',
-    fontSize: 36,
+    fontSize: DeviceInfo.isTablet() ? 50 : 36,
   },
 });

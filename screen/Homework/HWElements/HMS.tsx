@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, TextInput} from 'react-native';
 import {Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR, myFont} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 
 interface IHMS {
   sandwich: Sandwich;
@@ -22,17 +23,17 @@ const HWComponent: React.FC<IHMS> = ({sandwich, ReadOnly, modelAns}) => {
     modelAns ? fill[2].modelAns ?? '' : fill[2].ans ?? '',
   );
 
-  useEffect(() => {
-    fill[0].ans = Hour;
-  }, [Hour]);
+  // useEffect(() => {
+  //   fill[0].ans = Hour;
+  // }, [Hour]);
 
-  useEffect(() => {
-    fill[1].ans = Min;
-  }, [Min]);
+  // useEffect(() => {
+  //   fill[1].ans = Min;
+  // }, [Min]);
 
-  useEffect(() => {
-    fill[2].ans = Second;
-  }, [Second]);
+  // useEffect(() => {
+  //   fill[2].ans = Second;
+  // }, [Second]);
 
   return (
     <View style={styles.BigWrapper}>
@@ -45,6 +46,7 @@ const HWComponent: React.FC<IHMS> = ({sandwich, ReadOnly, modelAns}) => {
             value={Hour}
             onChangeText={text => {
               setHour(text);
+              fill[0].ans = text;
             }}
             maxLength={2}
           />
@@ -58,6 +60,7 @@ const HWComponent: React.FC<IHMS> = ({sandwich, ReadOnly, modelAns}) => {
             value={Min}
             onChangeText={text => {
               setMin(text);
+              fill[1].ans = text;
             }}
             maxLength={2}
           />
@@ -71,6 +74,7 @@ const HWComponent: React.FC<IHMS> = ({sandwich, ReadOnly, modelAns}) => {
             value={Second}
             onChangeText={text => {
               setSecond(text);
+              fill[2].ans = text;
             }}
             maxLength={2}
           />
@@ -92,13 +96,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   Title: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     fontFamily: myFont.GEN,
     color: '#707070',
-    marginBottom: 10,
+    marginBottom: DeviceInfo.isTablet() ? 20 : 10,
   },
   SubTitle: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     fontFamily: myFont.GEN,
     color: '#D2D2D2',
   },
@@ -113,20 +117,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   colonText: {
-    fontSize: 24,
+    fontSize: DeviceInfo.isTablet() ? 35 : 24,
     fontFamily: 'Poppins-Bold',
     color: '#707070',
-    marginTop: 6,
+    marginTop: DeviceInfo.isTablet() ? 10 : 6,
   },
   Input: {
-    height: 35,
-    fontSize: 18,
-    width: 40,
+    height: DeviceInfo.isTablet() ? 50 : 35,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
+    width: DeviceInfo.isTablet() ? 70 : 40,
     fontFamily: myFont.GEN,
-    marginVertical: 7.5,
-    marginHorizontal: 10,
+    marginVertical: DeviceInfo.isTablet() ? 12.5 : 7.5,
+    marginHorizontal: DeviceInfo.isTablet() ? 12.5 : 10,
     backgroundColor: '#FFF',
-    borderRadius: 10,
+    borderRadius: DeviceInfo.isTablet() ? 15 : 10,
     // borderWidth: 1,
     // borderColor: '#FFF',
     // borderBottomColor: '#707070',
@@ -139,10 +143,10 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
-    paddingBottom: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
+    paddingBottom: DeviceInfo.isTablet() ? 0 : 2,
     padding: 0,
   },
 });

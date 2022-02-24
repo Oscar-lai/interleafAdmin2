@@ -12,6 +12,7 @@ import {Filling, Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR, myFont} from '../../../theme/typography';
 import Fraction from './Fraction';
 import {SmallImageDisplay} from './SmallImageDisplay';
+import DeviceInfo from 'react-native-device-info';
 
 interface IMixed {
   sandwich: Sandwich;
@@ -101,6 +102,8 @@ const MyFilling: React.FC<IFilling> = ({
   const ans = modelAns ? filling.modelAns ?? '' : filling.ans ?? '';
   const [myAns, setMyAns] = useState(ans);
 
+  let fiBInputWidthFactor = DeviceInfo.isTablet() ? 60 : 40;
+
   // return nth instantly if it is mc type stuff
   if (
     filling.type === 'mcBox' ||
@@ -145,7 +148,10 @@ const MyFilling: React.FC<IFilling> = ({
             <TextInput
               style={[
                 styles.FibTextInput,
-                {width: Math.ceil(length / 2) * 40, maxWidth: '90%'},
+                {
+                  width: Math.ceil(length / 2) * fiBInputWidthFactor,
+                  maxWidth: '90%',
+                },
                 modelAns ? {color: MYCOLOR.lightRed} : {},
               ]}
               value={myAns}
@@ -163,7 +169,10 @@ const MyFilling: React.FC<IFilling> = ({
           <TextInput
             style={[
               styles.FibTextInput,
-              {width: Math.ceil(length / 2) * 40},
+              {
+                width: Math.ceil(length / 2) * fiBInputWidthFactor,
+                maxWidth: '90%',
+              },
               modelAns ? {color: MYCOLOR.lightRed} : {},
             ]}
             onChangeText={text => {
@@ -171,7 +180,11 @@ const MyFilling: React.FC<IFilling> = ({
               filling.ans = text;
             }}
             value={myAns}
-            maxLength={length}
+            maxLength={
+              fillingType === 'chineseNumber' || fillingType === 'text'
+                ? 1000
+                : length
+            }
             editable={!ReadOnly}
           />
         );
@@ -287,38 +300,38 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
   TextAnsContainer: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     color: '#707070',
     fontFamily: myFont.GEN,
-    height: 50,
-    lineHeight: 50,
+    height: DeviceInfo.isTablet() ? 70 : 50,
+    lineHeight: DeviceInfo.isTablet() ? 70 : 50,
     textAlign: 'center',
     textAlignVertical: 'center',
   },
   OperatorInputBox: {
-    width: 25,
-    height: 25,
-    fontSize: 18,
-    fontFamily: myFont.GEN,
+    width: DeviceInfo.isTablet() ? 40 : 25,
+    height: DeviceInfo.isTablet() ? 40 : 25,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
+    fontFamily: 'Poppins-Bold',
     margin: 0,
     borderRadius: 100,
-    borderWidth: 2,
+    borderWidth: DeviceInfo.isTablet() ? 3.5 : 2,
     borderColor: '#707070',
     color: '#707070',
     textAlign: 'center',
     justifyContent: 'center',
     alignItems: 'center',
     paddingBottom: 2,
-    marginVertical: 12.5,
+    marginVertical: DeviceInfo.isTablet() ? 20 : 12.5,
     padding: 0,
     zIndex: -2,
   },
   FibTextInput: {
-    height: 25,
-    fontSize: 18,
+    height: DeviceInfo.isTablet() ? 40 : 25,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
     fontFamily: myFont.GEN,
-    marginVertical: 12.5,
-    marginHorizontal: 10,
+    marginVertical: DeviceInfo.isTablet() ? 20 : 12.5,
+    marginHorizontal: DeviceInfo.isTablet() ? 20 : 10,
     backgroundColor: '#FFF',
     borderRadius: 100,
     color: '#707070',
@@ -330,10 +343,10 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
-    paddingBottom: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
+    paddingBottom: DeviceInfo.isTablet() ? 4 : 2,
     paddingTop: 0,
     zIndex: -2,
   },
@@ -345,25 +358,25 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     backgroundColor: '#FFF',
     borderWidth: 4,
     borderColor: '#FFF',
-    height: 34,
+    height: DeviceInfo.isTablet() ? 50 : 34,
     marginVertical: 3,
     borderRadius: 50,
-    paddingHorizontal: 22,
-    marginHorizontal: 10,
+    paddingHorizontal: DeviceInfo.isTablet() ? 30 : 22,
+    marginHorizontal: DeviceInfo.isTablet() ? 15 : 10,
   },
   TextItalic: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     color: '#707070',
     fontFamily: 'Poppins-Italic',
-    height: 25,
-    lineHeight: 27,
-    marginVertical: 12.5,
+    height: DeviceInfo.isTablet() ? 50 : 25,
+    lineHeight: DeviceInfo.isTablet() ? 50 : 27,
+    marginVertical: DeviceInfo.isTablet() ? 20 : 12.5,
     alignItems: 'center',
     justifyContent: 'center',
   },

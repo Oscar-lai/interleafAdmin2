@@ -2,6 +2,7 @@ import {customAlphabet} from 'nanoid/non-secure';
 import React, {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {MYCOLOR} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 interface ShortDivisionProps {
   sandwich: {
     bread: {
@@ -248,7 +249,7 @@ const InfiniteDivisionWrapper: React.FC<IInfiniteDivisionWrapper> = ({
             <View
               style={[
                 styles.OpacityWrapperForSign,
-                {
+                DeviceInfo.isTablet() ? {top: index * 90 + 25,} : {
                   top: index * 58 + 15,
                 },
                 index > 1 &&
@@ -425,7 +426,7 @@ function isLastBlockAllEmpty(obj: DivisionAns) {
 
 const styles = StyleSheet.create({
   BigWrapper: {
-    marginTop: 15,
+    marginTop: DeviceInfo.isTablet() ? 25 : 15,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -445,7 +446,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: DeviceInfo.isTablet() ? 10 : 5,
   },
   InfiniteWrapper: {
     flexDirection: 'column',
@@ -463,14 +464,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
-    marginTop: 5,
+    marginTop: DeviceInfo.isTablet() ? 10 : 5,
     position: 'relative',
   },
   Wrapper: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 6,
+    padding: DeviceInfo.isTablet() ? 10 : 6,
+    // backgroundColor:'gray'
   },
   OpacityWrapper: {
     flexDirection: 'column',
@@ -481,8 +483,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomWidth: 3,
-    borderLeftWidth: 3,
+    borderBottomWidth: DeviceInfo.isTablet() ? 5 : 3,
+    borderLeftWidth: DeviceInfo.isTablet() ? 5 : 3,
     borderLeftColor: '#707070',
     borderBottomColor: '#707070',
   },
@@ -490,7 +492,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 5,
+    padding: DeviceInfo.isTablet() ? 10 : 5,
   },
   DivisorWrapper: {
     flexDirection: 'row',
@@ -499,9 +501,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   DivisionText: {
-    margin: 5,
-    width: 22,
-    fontSize: 30,
+    margin: DeviceInfo.isTablet() ? 10 : 5,
+    width: DeviceInfo.isTablet() ? 35 : 22,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
     color: '#707070',
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
@@ -509,50 +511,50 @@ const styles = StyleSheet.create({
   SmallDivisionInputBox: {
     backgroundColor: '#FFF',
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
     fontFamily: 'Poppins-Bold',
-    marginVertical: 5,
-    marginHorizontal: 4,
-    width: 24,
-    height: 36,
+    marginVertical: DeviceInfo.isTablet() ? 10 : 5,
+    marginHorizontal: DeviceInfo.isTablet() ? 8 : 4,
+    width: DeviceInfo.isTablet() ? 40 : 24,
+    height: DeviceInfo.isTablet() ? 55 : 36,
     color: '#707070',
-    borderRadius: 8,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 8,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 5 : 3,
     shadowOpacity: 0.5,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   InfiniteSmallDivisionInputBox: {
     backgroundColor: '#FFF',
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
     fontFamily: 'Poppins-Bold',
-    marginVertical: 5,
-    marginHorizontal: 4,
-    width: 24,
-    height: 36,
+    marginVertical: DeviceInfo.isTablet() ? 10 : 5,
+    marginHorizontal: DeviceInfo.isTablet() ? 8 : 4,
+    width: DeviceInfo.isTablet() ? 40 : 24,
+    height: DeviceInfo.isTablet() ? 55 : 36,
     color: '#707070',
-    borderRadius: 8,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 8,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.5,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     marginBottom: 5,
     padding: 0,
   },
   Line: {
-    height: 3,
+    height: DeviceInfo.isTablet() ? 6 : 3,
     backgroundColor: '#707070',
-    marginVertical: 5,
+    marginVertical: DeviceInfo.isTablet() ? 9 : 5,
     transform: [{translateX: -2}],
     borderRadius: 20,
   },
@@ -564,12 +566,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 0,
     zIndex: -999,
+    // backgroundColor: 'gray',
   },
   DivisionSign: {
     width: '100%',
-    height: 50,
-    borderBottomWidth: 3,
-    borderLeftWidth: 3,
+    height: DeviceInfo.isTablet() ? 77 : 50,
+    borderBottomWidth: DeviceInfo.isTablet() ? 5 : 3,
+    borderLeftWidth: DeviceInfo.isTablet() ? 5 : 3,
     borderLeftColor: '#707070',
     borderBottomColor: '#707070',
   },
@@ -577,6 +580,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'flex-end',
-    paddingVertical: 5,
+    paddingVertical: DeviceInfo.isTablet() ? 9 : 5,
+    // backgroundColor:'gray'
   },
 });

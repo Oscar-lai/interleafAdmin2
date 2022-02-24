@@ -2,12 +2,29 @@ import {customAlphabet} from 'nanoid/non-secure';
 import React, {useCallback, useState} from 'react';
 import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {MYCOLOR, myFont} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 
 interface FractionProps {
   fillings: any;
   ReadOnly: boolean;
   modelAns?: boolean;
   color?: string;
+  bold?: boolean;
+}
+
+export interface IFraction {
+  integer?: (string | ISpecialFractElement)[];
+  denominator: (string | ISpecialFractElement)[];
+  'new-denominator': string[];
+  'crossed-denominator': number[];
+  numerator: (string | ISpecialFractElement)[];
+  'new-numerator': string[];
+  'crossed-numerator': number[];
+}
+
+interface ISpecialFractElement {
+  type: string;
+  food: string;
 }
 
 const Fraction: React.FC<FractionProps> = ({
@@ -15,6 +32,7 @@ const Fraction: React.FC<FractionProps> = ({
   ReadOnly,
   modelAns,
   color,
+  bold,
 }) => {
   const fractionData = fillings.food[0];
 
@@ -51,7 +69,6 @@ const Fraction: React.FC<FractionProps> = ({
   }
 
   // for crossing bot side
-
   let botFront = '',
     botMiddle = '',
     botEnd = '';
@@ -69,12 +86,27 @@ const Fraction: React.FC<FractionProps> = ({
     }
   }
 
+  //To increase the space between fraction text if there are any text input
+  let numOrDenoInput =
+    numerator.some((value: string) => value === '') ||
+    denominator.some((value: string) => value === '');
+
   const [myWidth, setMyWidth] = useState<number>(0);
 
   const onLayout = useCallback(event => {
     const {width} = event.nativeEvent.layout;
     setMyWidth(width);
   }, []);
+
+  //edit below if there is anything special to add on the fraction
+  //function to cater different style inside fraction
+  function specialStyle(type: string) {
+    if (type === 'italic') {
+      return {fontFamily: 'Poppins-Italic'};
+    } else {
+      return {};
+    }
+  }
 
   return (
     <View style={styles.FractionContainer}>
@@ -86,8 +118,10 @@ const Fraction: React.FC<FractionProps> = ({
                 styles.FractionText,
                 {marginRight: -10},
                 color ? {color: color} : {},
+                bold ? {fontFamily: 'Poppins-Bold'} : {},
+                typeof int === 'object' ? specialStyle(int.type) : {},
               ]}>
-              {int}
+              {typeof int === 'object' ? int.food : int}
             </Text>
           )}
           {int === '' && (
@@ -95,55 +129,88 @@ const Fraction: React.FC<FractionProps> = ({
               ReadOnly={ReadOnly}
               fill={sub_fillings[++sub_fillings_counter]}
               modelAns={modelAns ?? false}
+              bold={bold}
             />
           )}
         </View>
       )}
       <View style={styles.FractionRightContainer} onLayout={onLayout}>
         <View style={styles.NumeratorContainer}>
-          {!topFlag &&
-            numerator.map((item: string, index: number) => (
-              <React.Fragment key={'n' + id + index}>
-                {item !== '' && (
-                  <Text
-                    style={[styles.FractionText, color ? {color: color} : {}]}>
-                    {item}
-                  </Text>
-                )}
-                {item === '' && (
-                  <FractionInput
-                    modelAns={modelAns ?? false}
-                    ReadOnly={ReadOnly}
-                    fill={sub_fillings[++sub_fillings_counter]}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+          {!topFlag && (
+            <View style={styles.FractionTextContainer}>
+              {numerator.map(
+                (item: string | ISpecialFractElement, index: number) => (
+                  <React.Fragment key={'n' + id + index}>
+                    {item !== '' && (
+                      <Text
+                        style={[
+                          styles.FractionText,
+                          color ? {color: color} : {},
+                          numOrDenoInput
+                            ? {marginBottom: DeviceInfo.isTablet() ? 10 : 6}
+                            : {},
+                          bold ? {fontFamily: 'Poppins-Bold'} : {},
+                          typeof item === 'object'
+                            ? specialStyle(item.type)
+                            : {},
+                        ]}>
+                        {typeof item === 'object' ? item.food : item}
+                      </Text>
+                    )}
+                    {item === '' && (
+                      <FractionInput
+                        modelAns={modelAns ?? false}
+                        ReadOnly={ReadOnly}
+                        fill={sub_fillings[++sub_fillings_counter]}
+                        bold={bold}
+                      />
+                    )}
+                  </React.Fragment>
+                ),
+              )}
+            </View>
+          )}
           {topFlag && (
             <>
-              <Text style={[styles.FractionText, color ? {color: color} : {}]}>
+              <Text
+                style={[
+                  styles.FractionText,
+                  color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
+                ]}>
                 {topFront}
               </Text>
               <Text
                 style={[
                   styles.FractionTextCrossed,
                   color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
                 ]}>
                 {topMiddle}
               </Text>
-              {fractionData.new_numerator[0] === '' ? (
+              {fractionData['new-numerator'][0] === '' ? (
                 <FractionInput
                   modelAns={modelAns ?? false}
                   ReadOnly={ReadOnly}
                   fill={sub_fillings[++sub_fillings_counter]}
+                  bold={bold}
                 />
               ) : (
                 <Text
-                  style={[styles.FractionText, color ? {color: color} : {}]}>
-                  {fractionData.new_numerator[0]}
+                  style={[
+                    styles.FractionText,
+                    color ? {color: color} : {},
+                    bold ? {fontFamily: 'Poppins-Bold'} : {},
+                  ]}>
+                  {fractionData['new-numerator'][0]}
                 </Text>
               )}
-              <Text style={[styles.FractionText, color ? {color: color} : {}]}>
+              <Text
+                style={[
+                  styles.FractionText,
+                  color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
+                ]}>
                 {topEnd}
               </Text>
             </>
@@ -152,54 +219,86 @@ const Fraction: React.FC<FractionProps> = ({
         <View
           style={[
             styles.Line,
-            {width: myWidth},
+            {width: numOrDenoInput ? myWidth : myWidth * 0.8},
             color ? {backgroundColor: color} : {},
           ]}
         />
         <View style={styles.DenominatorContainer}>
-          {!botFlag &&
-            denominator.map((item: string, index: number) => (
-              <React.Fragment key={'n' + id + index}>
-                {item !== '' && (
-                  <Text
-                    style={[styles.FractionText, color ? {color: color} : {}]}>
-                    {item}
-                  </Text>
-                )}
-                {item === '' && (
-                  <FractionInput
-                    modelAns={modelAns ?? false}
-                    ReadOnly={ReadOnly}
-                    fill={sub_fillings[++sub_fillings_counter]}
-                  />
-                )}
-              </React.Fragment>
-            ))}
+          {!botFlag && (
+            <View style={styles.FractionTextContainer}>
+              {denominator.map(
+                (item: string | ISpecialFractElement, index: number) => (
+                  <React.Fragment key={'n' + id + index}>
+                    {item !== '' && (
+                      <Text
+                        style={[
+                          styles.FractionText,
+                          color ? {color: color} : {},
+                          numOrDenoInput
+                            ? {height: DeviceInfo.isTablet() ? 60 : 37}
+                            : {},
+                          bold ? {fontFamily: 'Poppins-Bold'} : {},
+                          typeof item === 'object'
+                            ? specialStyle(item.type)
+                            : {},
+                        ]}>
+                        {typeof item === 'object' ? item.food : item}
+                      </Text>
+                    )}
+                    {item === '' && (
+                      <FractionInput
+                        modelAns={modelAns ?? false}
+                        ReadOnly={ReadOnly}
+                        fill={sub_fillings[++sub_fillings_counter]}
+                        bold={bold}
+                      />
+                    )}
+                  </React.Fragment>
+                ),
+              )}
+            </View>
+          )}
           {botFlag && (
             <>
-              <Text style={[styles.FractionText, color ? {color: color} : {}]}>
+              <Text
+                style={[
+                  styles.FractionText,
+                  color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
+                ]}>
                 {botFront}
               </Text>
               <Text
                 style={[
                   styles.FractionTextCrossed,
                   color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
                 ]}>
                 {botMiddle}
               </Text>
-              {fractionData.new_denominator[0] === '' ? (
+              {fractionData['new-denominator'][0] === '' ? (
                 <FractionInput
                   modelAns={modelAns ?? false}
                   ReadOnly={ReadOnly}
                   fill={sub_fillings[++sub_fillings_counter]}
+                  bold={bold}
                 />
               ) : (
                 <Text
-                  style={[styles.FractionText, color ? {color: color} : {}]}>
-                  {fractionData.new_denominator[0]}
+                  style={[
+                    styles.FractionText,
+                    color ? {color: color} : {},
+                    bold ? {fontFamily: 'Poppins-Bold'} : {},
+                  ]}>
+                  {fractionData['new-denominator'][0]}
                 </Text>
               )}
-              <Text style={[styles.FractionText, color ? {color: color} : {}]}>
+              <Text
+                style={[
+                  styles.FractionText,
+                  color ? {color: color} : {},
+                  bold ? {fontFamily: 'Poppins-Bold'} : {},
+                ]}>
                 {botEnd}
               </Text>
             </>
@@ -216,24 +315,29 @@ interface IFractionInput {
   fill: any;
   modelAns: boolean;
   ReadOnly: boolean;
+  bold?: boolean;
 }
 
 const FractionInput: React.FC<IFractionInput> = ({
   fill,
   modelAns,
   ReadOnly,
+  bold,
 }) => {
   const ans = modelAns ? fill.modelAns ?? '' : fill.ans ?? '';
 
   const [myAns, setMyAns] = useState(ans);
+
+  let inputWidthFactor = DeviceInfo.isTablet() ? 35 : 22;
 
   return (
     <TextInput
       editable={!ReadOnly}
       style={[
         styles.FractionInputBox,
-        {width: fill.length * 22},
+        {width: fill.length * inputWidthFactor},
         modelAns ? {color: MYCOLOR.lightRed} : {},
+        bold ? {fontFamily: 'Poppins-Bold'} : {},
       ]}
       maxLength={fill.length}
       value={myAns}
@@ -250,23 +354,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    height: 50,
+    height: DeviceInfo.isTablet() ? 70 : 50,
     flexShrink: 0,
+    paddingHorizontal: DeviceInfo.isTablet() ? 3 : 2,
   },
   FractionLeftContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
+    height: DeviceInfo.isTablet() ? 70 : 50,
+    marginRight: DeviceInfo.isTablet() ? 10 : 8,
   },
   FractionRightContainer: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 15,
-    height: 50,
+    // marginHorizontal: DeviceInfo.isTablet() ? 16 : 12,
+    height: DeviceInfo.isTablet() ? 70 : 50,
   },
   NumeratorContainer: {
     flexDirection: 'row',
@@ -274,7 +380,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   Line: {
-    height: 2,
+    height: DeviceInfo.isTablet() ? 3.5 : 2,
     backgroundColor: '#707070',
   },
   DenominatorContainer: {
@@ -284,12 +390,12 @@ const styles = StyleSheet.create({
   },
   FractionInputBox: {
     backgroundColor: '#FFF',
-    borderRadius: 8,
-    height: 25,
-    fontSize: 18,
+    borderRadius: 100,
+    height: DeviceInfo.isTablet() ? 40 : 25,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
     fontFamily: myFont.GEN,
-    marginVertical: 6,
-    marginHorizontal: 10,
+    marginVertical: DeviceInfo.isTablet() ? 10 : 6,
+    // marginHorizontal: DeviceInfo.isTablet() ? 20 : 10,
     textAlign: 'center',
     color: '#707070',
     shadowColor: '#707070',
@@ -297,27 +403,32 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   FractionText: {
-    height: 25,
-    fontSize: 18,
+    height: DeviceInfo.isTablet() ? 40 : 25,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
     color: '#707070',
     fontFamily: myFont.GEN,
-    lineHeight: 25,
-    marginHorizontal: 10,
+    lineHeight: DeviceInfo.isTablet() ? 40 : 25,
+    // marginHorizontal: DeviceInfo.isTablet() ? 15 : 8,
+    // marginVertical: DeviceInfo.isTablet() ? 10 : 6,
   },
   FractionTextCrossed: {
-    fontSize: 18,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
     fontFamily: myFont.GEN,
     color: '#707070',
-    height: 24,
-    lineHeight: 24,
-    marginHorizontal: 5,
+    height: DeviceInfo.isTablet() ? 36 : 24,
+    lineHeight: DeviceInfo.isTablet() ? 36 : 24,
+    marginHorizontal: DeviceInfo.isTablet() ? 8 : 5,
     textDecorationLine: 'line-through',
     textDecorationStyle: 'solid',
+  },
+  FractionTextContainer: {
+    flexDirection: 'row',
+    marginHorizontal: DeviceInfo.isTablet() ? 15 : 8,
   },
 });

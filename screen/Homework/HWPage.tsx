@@ -19,7 +19,7 @@ Icon.loadFont();
 
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
 import HWProgressBar from '../../components/HWProgressBar';
-import useHWQ, {HWQ} from '../../hooks/useHWQ';
+import useHWQ, {HWQ, Sandwich} from '../../hooks/useHWQ';
 import QuestionDisplay from './HWDisplay';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
@@ -27,6 +27,8 @@ import {AppID} from '../../firebase/Config';
 import {Image} from 'react-native-compressor';
 import {SpinLoader} from '../../components/SpinLoader';
 Icon2.loadFont();
+import DeviceInfo from 'react-native-device-info';
+import HWBanner from './HWBanner';
 
 interface HWPageProps {
   navigation: any;
@@ -57,6 +59,11 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
   // array to show which of the questions is longQ
   const [needTakePhoto, setNeedTakePhoto] = useState<number[]>([]);
 
+  //to indicate the working progress
+  const [qStatus, setQStatus] = useState<
+    (boolean | null | number | undefined)[]
+  >([]);
+
   // for Auto scrolling
   function ScrollToQ(index: number) {
     flatListRef?.current?.scrollToIndex({animated: true, index: index});
@@ -65,7 +72,9 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
   const ViewableItemsChanged = useCallback(
     (info: {viewableItems: ViewToken[]; changed: ViewToken[]}) => {
       if (info) {
-        if (info.viewableItems[0]) setcurrQ(info.viewableItems[0].index ?? 0);
+        if (info.viewableItems[0]) {
+          setcurrQ(info.viewableItems[0].index ?? 0);
+        }
       }
     },
     [],
@@ -91,8 +100,103 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
     // force the component to re-render since RealHW cannot be a state
     // il faut que utiliser la cle a force re-render
     setkey('1234567');
+
+    //set up the progress array
+    if (!qStatus.length) {
+      let progress = Array(RealHW.length).fill(null);
+      setQStatus(progress);
+    }
   }, [QList]);
 
+  function pureStraight(sandwiches: Sandwich[]) {
+    let output = true;
+    for (let line of sandwiches) {
+      if (!line.type.includes('string') && line.type !== 'straight') {
+        output = false;
+        break;
+      }
+    }
+    return output;
+  }
+
+  //function for checking whether all the questions have been done
+  function checkAllDone(sandwiches: Sandwich[]) {
+    let allFilled = true;
+    for (let line of sandwiches) {
+      if (line.fillings.length) {
+        for (let blank of line.fillings) {
+          // if an ans is required
+          if (blank.modelAns) {
+            // catch if ans is null
+            let notDone;
+            if (typeof blank.modelAns === 'object') {
+              //if the ans is Array
+              if (Array.isArray(blank.modelAns)) {
+                notDone = !blank.ans || !blank.ans.length;
+              } else {
+                //if the ans is object
+                notDone = !blank.ans || !Object.keys(blank.ans).length;
+              }
+            } else {
+              //string type ans
+              notDone = !blank.ans && blank.ans !== '';
+            }
+            if (notDone) {
+              allFilled = false;
+            }
+          }
+          //check the subfilling
+          if (blank.sub_fillings && blank.sub_fillings.length) {
+            for (let subFilling of blank.sub_fillings) {
+              if (subFilling.modelAns) {
+                // catch if ans is null
+                if (!subFilling.ans && subFilling.ans !== '') {
+                  allFilled = false;
+                }
+              }
+            }
+          }
+        }
+      }
+      if (!allFilled) {
+        break;
+      }
+    }
+    if (allFilled) {
+      return true;
+    }
+    return false;
+  }
+
+  //Every time go to next question-> the status array will be updated for the progress bar
+  useEffect(() => {
+    let progress = [...qStatus];
+    RealHW.forEach((hwq, qIndex) => {
+      let done = false;
+      let straightType = pureStraight(hwq.sandwiches);
+      if (hwq.camera === false) {
+        //skip the straight
+        if (!straightType) {
+          done = checkAllDone(hwq.sandwiches);
+        }
+        //unless you check on this q, striaght will be shown as done
+        else if (qIndex === currQ) {
+          done = true;
+        }
+      } else {
+        if (photoArray[qIndex] !== '') {
+          done = true;
+        }
+      }
+
+      if (done) {
+        progress[qIndex] = 1;
+      }
+    });
+    setQStatus(progress);
+  }, [currQ]);
+
+  //API for submitting homework
   const SubmitHW = useCallback(() => {
     var flag = true;
 
@@ -120,7 +224,7 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
     let RealRealHW: {
       [id: string]: HWQ;
     } = {};
-    RealHW.map((hwq, index) => {
+    RealHW.map(hwq => {
       let temp = JSON.parse(JSON.stringify(hwq));
       // temp.time = TimeArray[index];
       temp.time = 1;
@@ -160,28 +264,10 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
     var counter = 1;
     let unfinished: number[] = [];
     for (let questionId in RealRealHW) {
-      if (RealRealHW[questionId]['camera'] === false) {
-        for (let line of RealRealHW[questionId]['sandwiches']) {
-          if (line['fillings'].length)
-            for (let blank of line['fillings']) {
-              // if an ans is required
-              if (blank['modelAns']) {
-                // catch if ans is null
-                if (!blank['ans']) {
-                  // if ans is empty string, still let it pass
-                  if (blank['ans'] !== '') {
-                    // toast(`請完成第${counter}題`);
-                    // return;
-                    if (!unfinished.includes(counter)) {
-                      unfinished.push(counter);
-                    }
-                  }
-                }
-              }
-            }
-          if (unfinished.includes(counter)) {
-            break;
-          }
+      if (RealRealHW[questionId].camera === false) {
+        let done = checkAllDone(RealRealHW[questionId].sandwiches);
+        if (!done) {
+          unfinished.push(counter);
         }
       }
       counter++;
@@ -190,13 +276,16 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
     if (unfinished.length > 0) {
       let temp = '';
       unfinished.map(Qindex => {
-        temp = temp + ' ';
-        temp = temp + Qindex.toString();
+        temp += '、';
+        temp += Qindex.toString();
       });
+      // remove first char, since we add an extra '、' at first
+      temp = temp.substring(1);
+
       Toast.show({
         type: 'error',
         text1: '錯誤',
-        text2: `請完成第${temp} 題`,
+        text2: `請先完成第${temp} 題`,
         visibilityTime: 1000,
       });
       return;
@@ -246,39 +335,21 @@ const HWPage: React.FC<HWPageProps> = ({navigation, route}) => {
     });
   }, []);
 
-  if (isLoading) {
-    return <SpinLoader />;
-  }
-
   return (
     <SafeWrapper key={key} customStyle={{backgroundColor: '#F8F8F8'}}>
-      <View style={styles.topBar}>
-        <TouchableOpacity
-          style={styles.BackButton}
-          onPress={() => navigation.goBack()}>
-          <Icon name="chevron-left" size={24} color={MYCOLOR.whiteSmoke} />
-          <Text style={styles.BackButtonText}>退出練習</Text>
-        </TouchableOpacity>
-        <View style={styles.InfoWrapper}>
-          {focus.map((topic: any, index: number) => (
-            <Text numberOfLines={1} style={styles.TopicText} key={index}>
-              {topic.chineseName}
-            </Text>
-          ))}
-          <View style={styles.InfoDetailWrapper}>
-            <Text style={styles.DetailText}>{QNum + '題'}</Text>
-            <View style={styles.DateWrapper}>
-              <Icon2 name="calendar-month-outline" size={20} color="#B2B2B2" />
-              <Text style={styles.DetailText}>{daysOfDistribution}</Text>
-            </View>
-          </View>
-        </View>
-      </View>
+      {isLoading && <SpinLoader />}
+      <HWBanner
+        goBack={() => navigation.goBack()}
+        focus={focus}
+        QNum={QNum}
+        daysOfDistribution={daysOfDistribution}
+      />
       {RealHW.length > 0 && (
         <HWProgressBar
           ScrollToQ={ScrollToQ}
           curr={currQ}
           length={RealHW.length}
+          statusArray={qStatus}
         />
       )}
       {RealHW.length > 0 && (
@@ -433,60 +504,5 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: MYCOLOR.whiteSmoke,
     fontFamily: myFont.GEN,
-  },
-  BackButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    alignItems: 'center',
-    borderRadius: 1000,
-    borderWidth: 2,
-    borderColor: MYCOLOR.whiteSmoke,
-    paddingHorizontal: '2%',
-    marginBottom: '3%',
-  },
-  BackButtonText: {
-    color: MYCOLOR.whiteSmoke,
-    fontFamily: myFont.GEN,
-    fontSize: 15,
-    textAlign: 'center',
-    lineHeight: 34,
-  },
-  InfoWrapper: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
-    width: 1,
-    flex: 1,
-  },
-  InfoDetailWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    width: '100%',
-  },
-  DateWrapper: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: '5%',
-  },
-  topBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: '5%',
-    flexGrow: 0,
-    marginVertical: '3%',
-  },
-  TopicText: {
-    fontSize: 28,
-    fontFamily: myFont.GEN,
-    color: MYCOLOR.lightGreen,
-  },
-  DetailText: {
-    fontSize: 16,
-    fontFamily: myFont.GEN,
-    color: '#B2B2B2',
   },
 });

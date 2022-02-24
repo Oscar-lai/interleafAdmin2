@@ -109,18 +109,22 @@ export const NumberLine: React.FC<INumberLine> = ({
 
 const LowerMarker = () => {
   return (
-    <View style={styles.customMarkerLeft}>
-      {/* <Text style={styles.myText}>−</Text> */}
-      <View style={styles.MarkerLineAbove} />
+    <View style={styles.customMarkerLeftContainer}>
+      <View style={styles.customMarkerLeft}>
+        {/* <Text style={styles.myText}>−</Text> */}
+        <View style={styles.MarkerLineAbove} />
+      </View>
     </View>
   );
 };
 
 const UpperMarker = () => {
   return (
-    <View style={styles.customMarkerRight}>
-      {/* <Text style={styles.myText}>+</Text> */}
-      <View style={styles.MarkerLineBelow} />
+    <View style={styles.customMarkerRightContainer}>
+      <View style={styles.customMarkerRight}>
+        {/* <Text style={styles.myText}>+</Text> */}
+        <View style={styles.MarkerLineBelow} />
+      </View>
     </View>
   );
 };
@@ -137,40 +141,64 @@ const styles = StyleSheet.create({
     marginBottom: 55,
     marginTop: 20,
   },
-  customMarkerRight: {
-    width: 20,
-    height: 20,
-    borderRadius: 30,
-    backgroundColor: MYCOLOR.mainOrange,
+  customMarkerRightContainer: {
+    width: 30,
+    height: 55,
+    paddingBottom: 45,
     marginBottom: 45,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'column',
+    position: 'relative',
+
+    // transform: [{translateY: 60}],
+  },
+  customMarkerRight: {
+    width: 30,
+    height: 30,
+    borderRadius: 40,
+    backgroundColor: MYCOLOR.mainOrange,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: -5,
+  },
+  customMarkerLeftContainer: {
+    width: 30,
+    height: 65,
+    paddingBottom: 45,
+    marginBottom: 45,
+    // marginTop: 120,
+    transform: [{translateY: 60}],
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   customMarkerLeft: {
-    width: 20,
-    height: 20,
-    borderRadius: 30,
+    width: 30,
+    height: 30,
+    borderRadius: 40,
     backgroundColor: MYCOLOR.mainOrange,
-    marginTop: 100,
+    marginTop: 80,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
+    marginLeft: -5,
   },
   MarkerLineBelow: {
     position: 'absolute',
-    top: 20,
-    left: 8,
-    width: 5,
-    height: 20,
+    top: 30,
+    left: 11,
+    width: 7,
+    height: 25,
     backgroundColor: MYCOLOR.mainOrange,
   },
   MarkerLineAbove: {
     position: 'absolute',
     top: -35,
-    left: 8,
-    width: 5,
-    height: 45,
+    left: 11,
+    width: 7,
+    height: 35,
     backgroundColor: MYCOLOR.mainOrange,
   },
   myText: {

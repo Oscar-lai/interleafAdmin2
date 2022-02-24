@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {GetImageURL} from '../../../firebase/Config';
+import DeviceInfo from 'react-native-device-info';
 
 interface IMCImageDisplay {
   url: string;
@@ -34,10 +35,10 @@ export const SmallImageDisplay: React.FC<IMCImageDisplay> = ({url}) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e1e4e8',
-    height: 30,
-    minWidth: 40,
+    height: DeviceInfo.isTablet() ? 70 : 30,
+    minWidth: DeviceInfo.isTablet() ? 70 : 40,
   },
   image: {
-    height: 30,
+    height: DeviceInfo.isTablet() ? 70 : 30,
   },
 });

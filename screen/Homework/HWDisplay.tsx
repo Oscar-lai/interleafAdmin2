@@ -6,6 +6,8 @@ import {customAlphabet} from 'nanoid/non-secure';
 import {MYCOLOR, myFont} from '../../theme/typography';
 import {Sandwich} from '../../hooks/useHWQ';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import DeviceInfo from 'react-native-device-info';
+
 
 interface IQuestionDisplay {
   sandwiches: Sandwich[];
@@ -90,22 +92,22 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   SubmitButton: {
-    height: 40,
-    width: '90%',
+    height: DeviceInfo.isTablet() ? 70 : 40,
+    width: DeviceInfo.isTablet() ? '35%' : '55%',
     backgroundColor: MYCOLOR.mainOrange,
     color: 'white',
-    borderRadius: 30,
-    fontSize: 20,
+    borderRadius: 50,
     marginTop: '10%',
     marginBottom: '15%',
     marginHorizontal: '5%',
     flexShrink: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
   },
   SubmitButtonText: {
     fontFamily: myFont.GEN,
     color: '#FFF',
-    fontSize: 22,
+    fontSize: DeviceInfo.isTablet() ? 30 : 22,
   },
 });

@@ -3,6 +3,7 @@ import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR, myFont} from '../../../theme/typography';
 import BarChartPressable from './BarChartPressable';
+import DeviceInfo from 'react-native-device-info';
 
 interface IBarChart {
   sandwich: Sandwich;
@@ -11,6 +12,10 @@ interface IBarChart {
 }
 
 const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
+  let legendXWidth = DeviceInfo.isTablet() ? 80 : 50;
+  let legendYHeight = DeviceInfo.isTablet() ? 30 : 20;
+  let xAxisThick = DeviceInfo.isTablet() ? 3 : 2;
+
   const fillings = sandwich.fillings;
 
   const bread = sandwich.bread;
@@ -24,15 +29,41 @@ const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
   let counter = 0;
 
   const [myWidth, setMyWidth] = useState<number>(0);
+  const [myHeight, setMyHeight] = useState<number>(0);
 
   const onLayout = useCallback(event => {
-    const {width} = event.nativeEvent.layout;
+    const {height, width} = event.nativeEvent.layout;
     setMyWidth(width);
+    setMyHeight(height);
   }, []);
+
+  function xLengendSeparation(width: number) {
+    let gridWidth = width / layer[1];
+    //No matter the number of the grid, the distance between lengends is 2 grid
+    let label_label_sparation = gridWidth * 2;
+    return label_label_sparation - legendXWidth;
+  }
+
+  function xLengendSeparation_primary(width: number) {
+    let gridWidth = width / layer[1];
+    let label_axis_sparation = gridWidth * 1.5;
+    return label_axis_sparation - legendXWidth / 2;
+  }
+
+  function yLengendSeparation(height: number) {
+    let gridHeight = height / layer[0];
+    let label_label_sparation = gridHeight;
+    return label_label_sparation - legendYHeight;
+  }
 
   return (
     <View style={styles.BarChartContainer}>
-      <View style={styles.BarContainer}>
+      <View
+        // onLayout={onLayout}
+        style={[
+          styles.BarContainer,
+          DeviceInfo.isTablet() ? {width: '80%'} : {flex: 1},
+        ]}>
         {xLabel === '' ? (
           <XLabelInput
             modelAns={modelAns ?? false}
@@ -42,7 +73,7 @@ const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
         ) : (
           <Text style={styles.XLabelText}>{xLabel}</Text>
         )}
-        <View onLayout={onLayout} style={styles.XLegendContainer}>
+        <View style={styles.XLegendContainer}>
           {xLegend.map((value: string, index: number) => (
             <React.Fragment key={index}>
               {value === '-' ? (
@@ -56,22 +87,29 @@ const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
                   key={index}
                   fill={fillings[++counter]}
                   isFirst={index === 1}
-                  percentNormal={(myWidth * 2) / xLegend.length - 50}
-                  percentFirst={(myWidth * 1.5) / xLegend.length - 25}
+                  // percentNormal={(myWidth * 2) / xLegend.length - legendXWidth}
+                  // percentFirst={
+                  //   (myWidth * 1.5) / xLegend.length - legendXWidth / 2
+                  // }
+                  percentNormal={xLengendSeparation(myWidth)}
+                  percentFirst={xLengendSeparation_primary(myWidth)}
                 />
               ) : (
                 <Text
                   style={[
                     styles.XLegendDisplay,
+                    {width: legendXWidth},
                     index === 1
                       ? {
-                          marginLeft: (myWidth * 1.5) / xLegend.length - 25,
+                          marginLeft: xLengendSeparation_primary(myWidth),
                         }
                       : {
-                          marginLeft: (myWidth * 2) / xLegend.length - 50,
+                          marginLeft: xLengendSeparation(myWidth),
                         },
                   ]}
-                  key={index}>
+                  key={index}
+                  numberOfLines={1}
+                  adjustsFontSizeToFit>
                   {value}
                 </Text>
               )}
@@ -85,9 +123,14 @@ const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
           type="x"
           ReadOnly={ReadOnly}
           modelAns={modelAns ?? false}
+          onLayout={onLayout}
         />
       </View>
-      <View style={[styles.Ycontainer, {height: yLegend.length * 28 + 14}]}>
+      <View
+        style={[
+          styles.Ycontainer,
+          {height: myHeight + legendYHeight / 2 + xAxisThick},
+        ]}>
         <View style={styles.YLegendContainer}>
           {yLegend.map((legend: string, index: number) => (
             <React.Fragment key={index}>
@@ -97,9 +140,16 @@ const BarChartX: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
                   ReadOnly={ReadOnly}
                   key={index}
                   fill={fillings[++counter]}
+                  separation={yLengendSeparation(myHeight)}
                 />
               ) : (
-                <Text style={styles.YLegendText}>{legend}</Text>
+                <Text
+                  style={[
+                    styles.YLegendText,
+                    {marginTop: yLengendSeparation(myHeight)},
+                  ]}>
+                  {legend}
+                </Text>
               )}
             </React.Fragment>
           ))}
@@ -130,6 +180,7 @@ interface IInput {
   fill: any;
   ReadOnly: boolean;
   modelAns: boolean;
+  separation?: number;
 }
 
 const XLabelInput: React.FC<IInput> = ({fill, ReadOnly, modelAns}) => {
@@ -171,11 +222,14 @@ const XLegendInput: React.FC<IXLegendInput> = ({
     modelAns ? fill.modelAns ?? '' : fill.ans ?? '',
   );
 
+  let legendXWidth = DeviceInfo.isTablet() ? 80 : 50;
+
   return (
     <TextInput
       editable={!ReadOnly}
       style={[
         styles.XLegendInputBox,
+        {width: legendXWidth},
         modelAns ? {color: MYCOLOR.lightRed} : {},
         isFirst
           ? {
@@ -212,7 +266,12 @@ const YLabelInput: React.FC<IInput> = ({fill, ReadOnly, modelAns}) => {
   );
 };
 
-const YLegendInput: React.FC<IInput> = ({fill, ReadOnly, modelAns}) => {
+const YLegendInput: React.FC<IInput> = ({
+  fill,
+  ReadOnly,
+  modelAns,
+  separation,
+}) => {
   const [myAns, setmyAns] = useState<string>(
     modelAns ? fill.modelAns ?? '' : fill.ans ?? '',
   );
@@ -227,6 +286,7 @@ const YLegendInput: React.FC<IInput> = ({fill, ReadOnly, modelAns}) => {
       }}
       style={[
         styles.YLegendInputBox,
+        {marginTop: separation},
         modelAns ? {color: MYCOLOR.lightRed} : {},
         {borderColor: myAns !== '' ? '#DDDDDD' : '#707070'},
       ]}
@@ -246,8 +306,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column-reverse',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    width: 1,
-    flex: 1,
+    // width: 1,
+    // flex: 1,
   },
   Ycontainer: {
     flexDirection: 'row-reverse',
@@ -264,27 +324,28 @@ const styles = StyleSheet.create({
   YLegendContainer: {
     height: '100%',
     flexDirection: 'column-reverse',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     alignItems: 'center',
-    transform: [{translateY: 10}],
-    marginHorizontal: 3,
+    // transform: [{translateY: 10}],
+    marginHorizontal: DeviceInfo.isTablet() ? 6 : 3,
+    // backgroundColor: 'black',
   },
   XLegendContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: '5%',
+    marginTop: DeviceInfo.isTablet() ? '3%' : '5%',
   },
   YLabelInputBox: {
     textAlign: 'center',
-    height: 28,
-    width: 85,
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    width: DeviceInfo.isTablet() ? 120 : 85,
     color: '#707070',
     backgroundColor: '#FFF',
-    borderRadius: 10,
-    fontSize: 16,
-    marginRight: -8,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 8,
+    fontSize: DeviceInfo.isTablet() ? 26 : 16,
+    marginRight: DeviceInfo.isTablet() ? 20 : -8,
     fontFamily: myFont.GEN,
     transform: [{rotate: '270deg'}],
     shadowColor: '#707070',
@@ -292,111 +353,111 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   YLabelText: {
     textAlign: 'center',
-    height: 28,
-    width: 120,
-    color: '#000',
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    width: DeviceInfo.isTablet() ? 150 : 120,
+    color: '#707070',
     backgroundColor: 'transparent',
-    fontSize: 16,
+    fontSize: DeviceInfo.isTablet() ? 26 : 16,
     fontFamily: myFont.GEN,
-    marginRight: 3,
+    marginRight: DeviceInfo.isTablet() ? 8 : 3,
     transform: [{rotate: '270deg'}],
   },
   XLabelInputBox: {
     textAlign: 'center',
-    height: 28,
-    width: 55,
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    width: DeviceInfo.isTablet() ? 90 : 55,
     color: '#707070',
     backgroundColor: '#FFF',
-    borderRadius: 10,
-    fontSize: 16,
+    borderRadius: DeviceInfo.isTablet() ? 15 : 10,
+    fontSize: DeviceInfo.isTablet() ? 26 : 16,
     fontFamily: myFont.GEN,
-    marginTop: 10,
+    marginTop: DeviceInfo.isTablet() ? 15 : 10,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   XLabelText: {
     textAlign: 'center',
-    height: 28,
-    width: 100,
-    lineHeight: 28,
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    width: DeviceInfo.isTablet() ? 150 : 100,
+    lineHeight: DeviceInfo.isTablet() ? 40 : 28,
     color: '#707070',
     backgroundColor: 'transparent',
-    fontSize: 16,
+    fontSize: DeviceInfo.isTablet() ? 26 : 16,
     fontFamily: myFont.GEN,
-    marginTop: 10,
+    marginTop: DeviceInfo.isTablet() ? 15 : 10,
   },
   YLegendInputBox: {
     textAlign: 'center',
-    height: 20,
-    margin: '4px 0',
-    width: 30,
+    height: DeviceInfo.isTablet() ? 30 : 20,
+    // margin: DeviceInfo.isTablet() ? 6 : 4,
+    width: DeviceInfo.isTablet() ? 40 : 30,
     color: '#707070',
     fontFamily: myFont.GEN,
     backgroundColor: '#FFF',
-    borderRadius: 10,
-    fontSize: 14,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 7,
+    fontSize: DeviceInfo.isTablet() ? 22 : 14,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   YLegendText: {
     textAlign: 'center',
-    height: 20,
-    marginVertical: 4,
+    height: DeviceInfo.isTablet() ? 30 : 20,
+    // marginVertical: DeviceInfo.isTablet() ? 5.5 : 4,
     width: 30,
-    lineHeight: 28,
+    lineHeight: DeviceInfo.isTablet() ? 30 : 28,
     color: '#707070',
     fontFamily: myFont.GEN,
     backgroundColor: 'transparent',
-    fontSize: 14,
+    fontSize: DeviceInfo.isTablet() ? 22 : 14,
   },
   XLegendInputBox: {
-    height: 28,
-    width: 50,
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    // width: DeviceInfo.isTablet() ? 80 : 50,
     fontFamily: myFont.GEN,
     color: '#707070',
     backgroundColor: '#FFF',
-    borderRadius: 10,
-    fontSize: 16,
+    borderRadius: DeviceInfo.isTablet() ? 15 : 10,
+    fontSize: DeviceInfo.isTablet() ? 24 : 16,
     textAlign: 'center',
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   XLegendDisplay: {
-    height: 28,
-    width: 50,
+    height: DeviceInfo.isTablet() ? 40 : 28,
+    // width: DeviceInfo.isTablet() ? 80 : 50,
     fontFamily: myFont.GEN,
-    lineHeight: 28,
+    lineHeight: DeviceInfo.isTablet() ? 40 : 28,
     color: '#707070',
     backgroundColor: 'transparent',
-    fontSize: 16,
+    fontSize: DeviceInfo.isTablet() ? 24 : 16,
     textAlign: 'center',
   },
 });

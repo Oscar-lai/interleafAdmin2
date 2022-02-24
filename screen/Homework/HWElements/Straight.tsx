@@ -5,6 +5,8 @@ import {StyleSheet, Text, View} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 import {Filling, Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
+import deviceInfoModule from 'react-native-device-info';
 
 interface IStraight {
   sandwich: Sandwich;
@@ -27,11 +29,20 @@ export const Straight: React.FC<IStraight> = ({
   let breadCounter = 0;
   let fillingCounter = -1;
 
+  const spacesTemp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  const [spaces, setSpaces] = useState<number[]>(spacesTemp);
+
   const [id] = useState(
     customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 16),
   );
 
-  console.log(bread);
+  let maxLength = 0;
+
+  breadKey.map((key: string) => {
+    if (bread[key].length > maxLength) {
+      maxLength = bread[key].length;
+    }
+  });
 
   const longest = useMemo(() => {
     let temp = 0;
@@ -67,9 +78,52 @@ export const Straight: React.FC<IStraight> = ({
                       // else display the actual value of item
                       [...Array(bread[breadCounter.toString()].length)].map(
                         (x, index) => (
-                          <Text style={styles.StraightText} key={id + index}>
-                            {bread[breadCounter.toString()][index]}
-                          </Text>
+                          <View style={styles.DummyWrapper} key={index}>
+                            {bread[breadCounter][index] !== '.' && (
+                              <View
+                                style={[
+                                  styles.DummySpace,
+                                  {
+                                    width: bread[breadCounter]
+                                      .slice(index, bread[breadCounter].length)
+                                      .includes('.')
+                                      ? spaces[
+                                          index +
+                                            maxLength -
+                                            bread[breadCounter].length
+                                        ] > 0
+                                        ? DeviceInfo.isTablet()
+                                          ? 20
+                                          : 14
+                                        : 0
+                                      : spaces[
+                                          index +
+                                            maxLength -
+                                            bread[breadCounter].length -
+                                            1
+                                        ] > 0
+                                      ? DeviceInfo.isTablet()
+                                        ? 20
+                                        : 14
+                                      : 0,
+                                  },
+                                ]}
+                              />
+                            )}
+                            <Text
+                              style={[
+                                styles.StraightText,
+                                bread[breadCounter][index] === '.'
+                                  ? {
+                                      marginHorizontal: -6,
+                                      width: 12,
+                                    }
+                                  : {},
+                              ]}
+                              key={id + index}>
+                              {bread[breadCounter.toString()][index]}
+                            </Text>
+                          </View>
                         ),
                       )
                     )}
@@ -84,14 +138,43 @@ export const Straight: React.FC<IStraight> = ({
                         <React.Fragment key={id + 'C' + index}>
                           {/* if this is " ", display input box */}
                           {a === '' ? (
-                            <SmallStraightInputBox
-                              modelAns={modelAns ?? false}
-                              ReadOnly={ReadOnly}
-                              filling={filling[++fillingCounter]}
-                            />
+                            <View style={styles.DummyWrapper} key={index}>
+                              <View
+                                style={[
+                                  styles.DummySpace,
+                                  {
+                                    width:
+                                      spaces[index - 1] > 0
+                                        ? DeviceInfo.isTablet()
+                                          ? 20
+                                          : 16
+                                        : 0,
+                                  },
+                                ]}
+                              />
+                              <SmallStraightInputBox
+                                modelAns={modelAns ?? false}
+                                ReadOnly={ReadOnly}
+                                filling={filling[++fillingCounter]}
+                                spaces={spaces}
+                                setSpaces={setSpaces}
+                                index={index}
+                              />
+                            </View>
                           ) : (
                             // else display the actual value of item
-                            <Text style={styles.StraightText}>{a}</Text>
+                            <Text
+                              style={[
+                                styles.StraightText,
+                                bread[breadCounter][index] === '.'
+                                  ? {
+                                      marginHorizontal: -4,
+                                      width: 12,
+                                    }
+                                  : {},
+                              ]}>
+                              {a}
+                            </Text>
                           )}
                         </React.Fragment>
                       ),
@@ -100,7 +183,7 @@ export const Straight: React.FC<IStraight> = ({
                 )}
               </React.Fragment>
             ))}
-            {/* after processing all item in this layer, 
+            {/* after processing all item in this layer,
             display the operator and line if it is not the last layer */}
             {index !== layer.length - 1 &&
               (operators[index] === '' ? (
@@ -110,12 +193,25 @@ export const Straight: React.FC<IStraight> = ({
                   filling={filling[++fillingCounter]}
                 />
               ) : (
-                <Text style={[styles.Operator, {right: longest * 32}]}>
+                <Text
+                  style={[
+                    styles.Operator,
+                    DeviceInfo.isTablet()
+                      ? {right: longest * 58}
+                      : {right: longest * 32},
+                  ]}>
                   {operators[index]}
                 </Text>
               ))}
             {index !== layer.length - 1 && (
-              <View style={[styles.Line, {width: longest * 32 + 50}]} />
+              <View
+                style={[
+                  styles.Line,
+                  DeviceInfo.isTablet()
+                    ? {width: longest * 55 + 70}
+                    : {width: longest * 32 + 50},
+                ]}
+              />
             )}
           </View>
         ))}
@@ -128,6 +224,15 @@ interface IStraightInputs {
   filling: Filling;
   ReadOnly: boolean;
   modelAns: boolean;
+}
+
+interface ISmallStraightInputs {
+  filling: Filling;
+  ReadOnly: boolean;
+  modelAns: boolean;
+  spaces: number[];
+  setSpaces: (n: number[]) => void;
+  index: number;
 }
 
 const StraightInputBox: React.FC<IStraightInputs> = ({
@@ -160,10 +265,13 @@ const StraightInputBox: React.FC<IStraightInputs> = ({
   );
 };
 
-const SmallStraightInputBox: React.FC<IStraightInputs> = ({
+const SmallStraightInputBox: React.FC<ISmallStraightInputs> = ({
   filling,
   ReadOnly,
   modelAns,
+  spaces,
+  setSpaces,
+  index,
 }) => {
   const ans = modelAns ? filling.modelAns ?? '' : filling.ans ?? '';
 
@@ -178,10 +286,31 @@ const SmallStraightInputBox: React.FC<IStraightInputs> = ({
   const [myAns, setMyAns] = useState(ans);
 
   return (
+    // <View
+    //   style={[
+    //     myAns === '.'
+    //       ? {
+    //           // marginLeft: DeviceInfo.isTablet() ? -2 : 0,
+    //         }
+    //       : {},
+    //     {
+    //       // zIndex: 800,
+    //       // marginVertical: DeviceInfo.isTablet() ? 10 : 5,
+    //       // marginHorizontal: DeviceInfo.isTablet() ? 8 : 4,
+    //       backgroundColor: 'red',
+    //     },
+    //   ]}>
     <TextInput
       style={[
         styles.SmallStraightInput,
         modelAns ? {color: MYCOLOR.lightRed} : {},
+        myAns === '.'
+          ? {
+              width: DeviceInfo.isTablet() ? 12 : 8,
+              marginRight: DeviceInfo.isTablet() ? -18 : -12,
+              marginLeft: DeviceInfo.isTablet() ? -2 : 0,
+            }
+          : {},
       ]}
       maxLength={1}
       editable={!ReadOnly}
@@ -189,9 +318,21 @@ const SmallStraightInputBox: React.FC<IStraightInputs> = ({
       onChangeText={text => {
         setMyAns(text);
         filling.ans = text;
+        if (text === '.') {
+          let temp = spaces.slice(0);
+          temp[index] = temp[index] + 1;
+          setSpaces(temp);
+        } else {
+          let temp = spaces.slice(0);
+          if (temp[index] > 0) {
+            temp[index] = temp[index] - 1;
+            setSpaces(temp);
+          }
+        }
       }}
       id={id}
     />
+    // </View>
   );
 };
 
@@ -224,35 +365,35 @@ const styles = StyleSheet.create({
   StraightInput: {
     backgroundColor: 'transparent',
     textAlign: 'right',
-    fontSize: 30,
-    maxWidth: 130,
-    minWidth: 46,
-    height: 32,
-    margin: 4,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
+    maxWidth: DeviceInfo.isTablet() ? 200 : 130,
+    minWidth: DeviceInfo.isTablet() ? 42 : 46,
+    height: DeviceInfo.isTablet() ? 55 : 32,
+    margin: DeviceInfo.isTablet() ? 8 : 4,
     letterSpacing: 4,
     color: '#FFF',
-    borderRadius: 12,
+    borderRadius: DeviceInfo.isTablet() ? 16 : 12,
     padding: 0,
   },
   SmallStraightInput: {
     backgroundColor: '#FFF',
     textAlign: 'center',
-    fontSize: 30,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
     fontFamily: 'Poppins-Bold',
-    marginVertical: 5,
-    marginHorizontal: 4,
-    width: 24,
-    height: 36,
+    marginVertical: DeviceInfo.isTablet() ? 10 : 5,
+    marginHorizontal: DeviceInfo.isTablet() ? 8 : 4,
+    width: DeviceInfo.isTablet() ? 42 : 24,
+    height: DeviceInfo.isTablet() ? 55 : 36,
     color: '#707070',
-    borderRadius: 8,
+    borderRadius: DeviceInfo.isTablet() ? 10 : 8,
     shadowColor: '#707070',
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 5 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   BigStraightWrapper: {
@@ -260,7 +401,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    marginTop: 15,
+    marginTop: DeviceInfo.isTablet() ? 30 : 15,
   },
   StraightWrapper: {
     flexDirection: 'column',
@@ -271,18 +412,19 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-end',
     justifyContent: 'center',
-    paddingLeft: 50,
-    marginBottom: 10,
+    paddingLeft: DeviceInfo.isTablet() ? 75 : 50,
+    marginBottom: DeviceInfo.isTablet() ? 15 : 10,
     position: 'relative',
     width: 'auto',
+    // backgroundColor:'gray'
   },
   Operator: {
     position: 'absolute',
-    bottom: 12,
-    width: 30,
-    height: 30,
-    fontSize: 30,
-    lineHeight: 30,
+    bottom: DeviceInfo.isTablet() ? 16 : 12,
+    width: DeviceInfo.isTablet() ? 45 : 30,
+    height: DeviceInfo.isTablet() ? 45 : 30,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
+    lineHeight: DeviceInfo.isTablet() ? 45 : 30,
     color: '#909090',
     fontFamily: 'Poppins-Bold',
   },
@@ -290,11 +432,11 @@ const styles = StyleSheet.create({
     color: '#909090',
     fontFamily: 'Poppins-Bold',
     position: 'absolute',
-    bottom: 18,
-    left: 5,
-    width: 30,
-    height: 30,
-    fontSize: 25,
+    bottom: DeviceInfo.isTablet() ? 28 : 18,
+    left: DeviceInfo.isTablet() ? 0 : 5,
+    width: DeviceInfo.isTablet() ? 45 : 30,
+    height: DeviceInfo.isTablet() ? 45 : 30,
+    fontSize: DeviceInfo.isTablet() ? 35 : 25,
     borderRadius: 50,
     textAlign: 'center',
     backgroundColor: '#FFF',
@@ -305,15 +447,17 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    shadowRadius: 3,
+    shadowRadius: DeviceInfo.isTablet() ? 4 : 3,
     shadowOpacity: 0.2,
-    elevation: 2,
+    elevation: DeviceInfo.isTablet() ? 4 : 2,
     padding: 0,
   },
   StraightText: {
-    margin: 5,
-    width: 22,
-    fontSize: 30,
+    margin: DeviceInfo.isTablet() ? 10 : 5,
+    width: DeviceInfo.isTablet() ? 35 : 22,
+    fontSize: DeviceInfo.isTablet() ? 45 : 30,
+
+    height: DeviceInfo.isTablet() ? 70 : 42,
     letterSpacing: 6,
     color: '#707070',
     fontFamily: 'Poppins-Bold',
@@ -323,20 +467,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    marginBottom: 12,
-    height: 42,
+    marginBottom: DeviceInfo.isTablet() ? 18 : 12,
+    height: DeviceInfo.isTablet() ? 70 : 42,
     flexShrink: 0,
   },
   OperatorLineContainer: {
-    height: 4,
+    height: DeviceInfo.isTablet() ? 7 : 4,
   },
   Line: {
     position: 'absolute',
     width: '100%',
-    height: 4,
+    height: DeviceInfo.isTablet() ? 7 : 4,
     backgroundColor: '#909090',
     bottom: 0,
     right: 0,
     borderRadius: 20,
+  },
+  DummyWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  DummySpace: {
+    height: DeviceInfo.isTablet() ? 55 : 36,
   },
 });

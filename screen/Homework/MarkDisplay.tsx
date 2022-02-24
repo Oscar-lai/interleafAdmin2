@@ -15,6 +15,8 @@ import Icon2 from 'react-native-vector-icons/AntDesign';
 import {widthPercentageToDP} from 'react-native-responsive-screen';
 Icon2.loadFont();
 
+import DeviceInfo from 'react-native-device-info';
+
 interface ICorrDisplay {
   sandwiches: Sandwich[];
   //   correct: boolean;
@@ -173,7 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   SuggerstAnsText: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     color: MYCOLOR.lightRed,
     fontFamily: myFont.GEN,
     width: '100%',

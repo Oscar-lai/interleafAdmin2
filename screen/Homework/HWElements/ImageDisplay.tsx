@@ -2,12 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View, TouchableOpacity} from 'react-native';
 import {GetImageURL} from '../../../firebase/Config';
 import {MYCOLOR} from '../../../theme/typography';
-import Icon from 'react-native-vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/Feather';
 import {
   heightPercentageToDP,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
 Icon.loadFont();
+
+import DeviceInfo from 'react-native-device-info';
 
 interface IImageDisplay {
   imgURL: string[];
@@ -60,6 +62,13 @@ export const ImageDisplay: React.FC<IImageDisplay> = ({imgURL, type, zoom}) => {
       onPress={ToggleBigImg}
       activeOpacity={zoom ? 0.2 : 1}
       style={[styles.container, URL ? {backgroundColor: 'transparent'} : {}]}>
+      {zoom && (
+        <Icon
+          name="zoom-in"
+          style={styles.crossIcon}
+          size={DeviceInfo.isTablet() ? 40 : 25}
+        />
+      )}
       {URL !== '' && (
         <Image resizeMode="contain" source={{uri: URL}} style={styles.image} />
       )}
@@ -123,18 +132,18 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e1e4e8',
     width: '100%',
-    height: 250,
-    marginTop: 15,
+    height: DeviceInfo.isTablet() ? 400 : 250,
+    // marginTop: DeviceInfo.isTablet() ? 30 : 15,
     zIndex: 100,
   },
   image: {
-    height: 250,
+    height: DeviceInfo.isTablet() ? 400 : 250,
   },
   ResContainer: {
     backgroundColor: '#e1e4e8',
     width: '100%',
     height: 450,
-    marginTop: 15,
+    // marginTop: 15,
     zIndex: 100,
   },
   resImg: {
@@ -158,16 +167,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FAFAFA',
   },
-  BigImageX: {width: '90%', height: heightPercentageToDP('70%')},
+  BigImageX: {
+    width: '90%',
+    height: heightPercentageToDP('70%'),
+  },
   BigImageY: {
     width: heightPercentageToDP('70%'),
     height: widthPercentageToDP('70%'),
     transform: [{rotate: '90deg'}],
   },
   crossIcon: {
-    width: 30,
     position: 'absolute',
-    top: 110,
-    right: 20,
+    bottom: 0,
+    right: -10,
+    color: MYCOLOR.whiteSmoke,
+    zIndex: 0,
   },
 });

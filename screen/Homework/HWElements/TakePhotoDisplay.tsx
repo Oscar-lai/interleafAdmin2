@@ -13,6 +13,8 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import Icon from 'react-native-vector-icons/Feather';
 import {myFont} from '../../../theme/typography';
 Icon.loadFont();
+import DeviceInfo from 'react-native-device-info';
+
 
 interface ITakePhotoDisplay {
   photo: string[];
@@ -182,7 +184,7 @@ export const TakePhotoDisplay: React.FC<ITakePhotoDisplay> = ({
           <TouchableOpacity
             onPress={takePhotoHandler}
             style={styles.BoxWrapper}>
-            <Icon name="camera" size={60} color="#B2B2B2" />
+            <Icon name="camera" size={DeviceInfo.isTablet() ? 85 : 60} color="#B2B2B2" />
             <Text style={styles.ButtonText}>按此拍照</Text>
           </TouchableOpacity>
         </>
@@ -194,19 +196,20 @@ export const TakePhotoDisplay: React.FC<ITakePhotoDisplay> = ({
 const styles = StyleSheet.create({
   BigWrapper: {
     width: '100%',
-    marginVertical: 50,
+    marginVertical: DeviceInfo.isTablet() ? 30 : 10,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
+    // backgroundColor:'gray'
   },
   Title: {
-    fontSize: 20,
+    fontSize: DeviceInfo.isTablet() ? 30 : 20,
     fontFamily: myFont.GEN,
     color: '#B2B2B2',
   },
   ButtonText: {
-    fontSize: 14,
+    fontSize: DeviceInfo.isTablet() ? 22 : 14,
     fontFamily: myFont.GEN,
     color: '#B2B2B2',
     marginTop: 5,
@@ -221,19 +224,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 130,
-    height: 130,
+    width: DeviceInfo.isTablet() ? 180 : 130,
+    height: DeviceInfo.isTablet() ? 180 : 130,
     borderRadius: 100,
-    borderWidth: 5,
+    borderWidth: DeviceInfo.isTablet() ? 8 : 5,
     borderColor: '#B2B2B2',
-    marginTop: 20,
+    marginTop: DeviceInfo.isTablet() ? 28 : 20,
   },
   camera: {
     width: 0,
     height: 0,
   },
   previewPic: {
-    width: '100%',
-    height: 500,
+    width: DeviceInfo.isTablet() ? '95%' : '100%',
+    height: DeviceInfo.isTablet() ? 700 : 500,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

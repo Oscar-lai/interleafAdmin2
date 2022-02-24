@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from 'react';
 
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import DeviceInfo from 'react-native-device-info';
 
 interface BarChartPressableProps {
   height: number;
@@ -9,6 +11,7 @@ interface BarChartPressableProps {
   type: 'x' | 'y';
   ReadOnly: boolean;
   modelAns: boolean;
+  onLayout?: (event: any) => void;
 }
 
 const BarChartPressable: React.FC<BarChartPressableProps> = ({
@@ -18,6 +21,7 @@ const BarChartPressable: React.FC<BarChartPressableProps> = ({
   ReadOnly,
   modelAns,
   type,
+  onLayout,
 }) => {
   let tempGrid: {[id: string]: boolean[]} = {};
 
@@ -28,7 +32,7 @@ const BarChartPressable: React.FC<BarChartPressableProps> = ({
     });
   } else {
     [...Array(height)].map((x, index) => {
-      let temp = [...Array(height)].fill(false, 0, height);
+      let temp = [...Array(width)].fill(false, 0, width);
       tempGrid[(index + 1).toString()] = temp;
     });
   }
@@ -41,12 +45,11 @@ const BarChartPressable: React.FC<BarChartPressableProps> = ({
 
   useEffect(() => {
     fill.ans = BarMap;
-    console.log(BarMap);
   }, [BarMap]);
 
   if (type === 'x') {
     return (
-      <View style={styles.ChartContainer}>
+      <View style={styles.ChartContainer} onLayout={onLayout}>
         <View style={styles.Line} />
         <View style={styles.BottomLine} />
         {keys.map((key, index) => (
@@ -69,7 +72,7 @@ const BarChartPressable: React.FC<BarChartPressableProps> = ({
   }
 
   return (
-    <View style={styles.ChartContainerY}>
+    <View style={styles.ChartContainerY} onLayout={onLayout}>
       <View style={styles.Line} />
       <View style={styles.BottomLine} />
       {keys.map((key, index) => (
@@ -150,13 +153,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   BarItemBox: {
-    height: 28,
+    height: DeviceInfo.isTablet() ? 50 : 28,
     width: '100%',
-    borderWidth: 1,
+    borderWidth: DeviceInfo.isTablet() ? 2 : 1,
   },
   Line: {
     height: '100%',
-    width: 2,
+    width: DeviceInfo.isTablet() ? 3 : 2,
     backgroundColor: 'black',
     flexShrink: 0,
     position: 'absolute',
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
     left: -2,
   },
   BottomLine: {
-    height: 2,
+    height: DeviceInfo.isTablet() ? 3 : 2,
     width: '100%',
     backgroundColor: 'black',
     flexShrink: 0,

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
 import {MYCOLOR} from '../../../theme/typography';
+import DeviceInfo from 'react-native-device-info';
 
 interface TableProps {
   sandwich: any;
@@ -28,7 +29,7 @@ const Table: React.FC<TableProps> = ({sandwich, ReadOnly, modelAns}) => {
   return (
     <ScrollView
       style={{
-        marginTop: 20,
+        marginTop: DeviceInfo.isTablet() ? 20 : 15,
       }}
       horizontal
       showsHorizontalScrollIndicator={false}>
@@ -192,7 +193,14 @@ const TableItem: React.FC<ITableItem> = ({
   }
 
   return (
-    <Text style={[styles.TableItemText, {width: length * 18 + 6}]} key={index}>
+    <Text
+      style={[
+        styles.TableItemText,
+        DeviceInfo.isTablet()
+          ? {width: length * 35 + 10}
+          : {width: length * 18 + 6},
+      ]}
+      key={index}>
       {ansItem}
     </Text>
   );
@@ -204,6 +212,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
+    borderWidth: DeviceInfo.isTablet() ? 2 : 1,
+    borderColor: MYCOLOR.whiteSmoke,
   },
   TableRowContainer: {
     flex: 1,
@@ -211,29 +221,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   TableItemInput: {
-    height: 28,
+    height: DeviceInfo.isTablet() ? 50 : 28,
     width: 1,
-    lineHeight: 28,
+    lineHeight: DeviceInfo.isTablet() ? 50 : 28,
     color: '#F8F8F8',
     backgroundColor: 'transparent',
-    borderWidth: 1,
+    borderWidth: DeviceInfo.isTablet() ? 2 : 1,
     borderColor: '#D2D2D2',
-    fontSize: 16,
+    fontSize: DeviceInfo.isTablet() ? 26 : 16,
     textAlign: 'center',
     padding: 0,
     margin: 0,
     flexShrink: 0,
   },
   TableItemText: {
-    height: 28,
-    lineHeight: 28,
+    height: DeviceInfo.isTablet() ? 50 : 28,
+    lineHeight: DeviceInfo.isTablet() ? 50 : 28,
     textAlign: 'center',
-    borderWidth: 1,
+    borderWidth: DeviceInfo.isTablet() ? 2 : 1,
     borderColor: '#D2D2D2',
     backgroundColor: '#F8F8F8',
     color: '#707070',
     flexShrink: 0,
+    fontSize: DeviceInfo.isTablet() ? 26 : 14,
   },
 });

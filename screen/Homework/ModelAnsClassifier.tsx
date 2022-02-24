@@ -18,6 +18,9 @@ import {NumberLine} from './HWElements/NumberLine';
 import ShortDivision from './HWElements/ShortDivision';
 import {Straight} from './HWElements/Straight';
 import Table from './HWElements/Table';
+import DeviceInfo from 'react-native-device-info';
+import QuestionText from './HWElements/HWComponent/QuestionText';
+import {specialStyle} from './HWElements/McInput';
 
 export const ModelAnsClassifier: React.FC<any> = props => {
   let formattedLine = <></>;
@@ -65,7 +68,20 @@ export const ModelAnsClassifier: React.FC<any> = props => {
         case 'mcBox': {
           formattedLine = (
             <View style={styles.container}>
-              <Text style={styles.ansText}>{modelAns}</Text>
+              <QuestionText
+                style={styles.ansText_QuestionText}
+                containerStyle={styles.ansTextContainer_QuestionText}
+                specialChracterIndex={
+                  typeof modelAns === 'object' ? modelAns.indexes : undefined
+                }
+                specialStyle={
+                  typeof modelAns === 'object'
+                    ? specialStyle(modelAns.type)
+                    : {}
+                }>
+                {typeof modelAns === 'object' ? modelAns.food : modelAns}
+              </QuestionText>
+              {/* <Text style={styles.ansText}>{modelAns}</Text> */}
             </View>
           );
           break;
@@ -81,12 +97,24 @@ export const ModelAnsClassifier: React.FC<any> = props => {
         case 'mcFrac': {
           formattedLine = (
             <View style={styles.container}>
-              <Fraction
-                color={MYCOLOR.lightRed}
-                modelAns
-                ReadOnly
-                fillings={{food: [modelAns]}}
-              />
+              {typeof modelAns === 'string' ? (
+                <Text style={styles.ansText}>{modelAns}</Text>
+              ) : modelAns.denominator ? (
+                <Fraction
+                  color={MYCOLOR.lightRed}
+                  modelAns
+                  ReadOnly
+                  fillings={{food: [modelAns]}}
+                />
+              ) : (
+                <QuestionText
+                  style={styles.ansText_QuestionText}
+                  containerStyle={styles.ansTextContainer_QuestionText}
+                  specialChracterIndex={modelAns.indexes}
+                  specialStyle={specialStyle(modelAns.type)}>
+                  {modelAns.food}
+                </QuestionText>
+              )}
             </View>
           );
           break;
@@ -289,13 +317,22 @@ const styles = StyleSheet.create({
     width: '100%',
     fontFamily: myFont.GEN,
     color: MYCOLOR.lightRed,
-    fontSize: 18,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
   },
   // for MC ans text that doesnt start on side and thus not width 100%
   ansTextMC: {
     marginVertical: '5%',
     fontFamily: myFont.GEN,
     color: MYCOLOR.lightRed,
-    fontSize: 18,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
+  },
+  ansText_QuestionText: {
+    fontFamily: myFont.GEN,
+    color: MYCOLOR.lightRed,
+    fontSize: DeviceInfo.isTablet() ? 26 : 18,
+  },
+  ansTextContainer_QuestionText: {
+    marginVertical: '5%',
+    width: '100%',
   },
 });
