@@ -22,6 +22,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {HWQ} from '../../hooks/useHWQ';
 import CorrDisplay from './CorrDisplay';
 import TrueFalseButton from '../../components/TrueFalseButton';
+import addQuestionType from '../../helper/questionType';
 Icon2.loadFont();
 
 import firestore from '@react-native-firebase/firestore';
@@ -38,6 +39,9 @@ const CorrPage: React.FC<CorrPageProps> = ({navigation, route}) => {
   const QList = useChapterQ(chapter);
   const qStatus = QList.map(element => {
     return element.checked;
+  });
+  const qTypes = QList.map(element => {
+    return addQuestionType(element);
   });
 
   let checkedNumber = 0;
@@ -161,6 +165,7 @@ const CorrPage: React.FC<CorrPageProps> = ({navigation, route}) => {
                       sandwiches={item.sandwiches}
                       correct={false}
                       Qindex={index}
+                      type={qTypes[index]}
                     />
                   </View>
                 );

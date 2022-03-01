@@ -12,12 +12,20 @@ interface ICorrDisplay {
   sandwiches: Sandwich[];
   correct: boolean;
   Qindex: number;
+  type: string[];
 }
 
-const CorrDisplay: React.FC<ICorrDisplay> = ({sandwiches, Qindex, correct}) => {
+const CorrDisplay: React.FC<ICorrDisplay> = ({
+  sandwiches,
+  Qindex,
+  correct,
+  type,
+}) => {
   let FullQuestion = <></>;
 
   const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 10);
+
+  let onlyMC = type.every(item => item.includes('mc')) && type.length > 0;
 
   // load all the lines from the question sandwich
   if (sandwiches) {
@@ -37,11 +45,13 @@ const CorrDisplay: React.FC<ICorrDisplay> = ({sandwiches, Qindex, correct}) => {
               index={Qindex}
               key={nanoid + index.toString()}
               sandwich={line}
+              ReadOnly
               navigation={{}}
+              correction
             />
           ))}
         </View>
-        {!correct && (
+        {!correct && !onlyMC && (
           <View style={styles.modelAnsWrapper}>
             <View style={styles.modelAnsInnerWrapper}>
               <Text style={styles.SuggerstAnsText}>建議答案：</Text>

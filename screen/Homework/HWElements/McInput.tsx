@@ -13,12 +13,14 @@ import Fraction from './Fraction';
 
 import DeviceInfo from 'react-native-device-info';
 import QuestionText from './HWComponent/QuestionText';
-import { checkAns } from '../../../helper/checkAns';
+import {checkAns} from '../../../helper/checkAns';
+import {MYCOLOR} from '../../../theme/typography';
 
 interface IMcAns {
   filling: Filling;
   ReadOnly: boolean;
   condition?: (n: number) => void;
+  correction?: boolean;
 }
 interface ISpecialString {
   type: string;
@@ -36,9 +38,14 @@ export function specialStyle(type: string) {
   }
 }
 
-export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
+export const MCAns: React.FC<IMcAns> = ({
+  filling,
+  ReadOnly,
+  condition,
+  correction,
+}) => {
   const type = filling.type;
-
+  const modelAns = filling.modelAns;
   const ansArray = filling.food;
   var McAns = filling.ans;
 
@@ -59,6 +66,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             style={[
               styles.LabelContainer,
               styles.PigContainer,
+              correction && modelAns === ans
+                ? {borderColor: MYCOLOR.lightRed}
+                : {},
               myAns === ans
                 ? {
                     borderColor: '#B5CD33',
@@ -78,6 +88,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.McAnsLabel,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 myAns === ans
                   ? {
                       color: '#B5CD33',
@@ -101,6 +114,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             style={[
               styles.LabelContainer,
               styles.BoxContainer,
+              correction && checkAns(modelAns, ans)
+                ? {borderColor: MYCOLOR.lightRed}
+                : {},
               checkAns(myAns, ans)
                 ? {
                     borderColor: '#B5CD33',
@@ -120,6 +136,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.McAnsLabel,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 checkAns(myAns, ans)
                   ? {
                       color: '#B5CD33',
@@ -132,6 +151,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
               <QuestionText
                 style={[
                   styles.McAnsText,
+                  correction && checkAns(modelAns, ans)
+                    ? {color: MYCOLOR.lightRed}
+                    : {},
                   checkAns(myAns, ans)
                     ? {
                         color: '#B5CD33',
@@ -163,6 +185,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             style={[
               styles.LabelContainer,
               styles.FracContainer,
+              correction && checkAns(modelAns, ans)
+                ? {borderColor: MYCOLOR.lightRed}
+                : {},
               checkAns(myAns, ans)
                 ? {
                     borderColor: '#B5CD33',
@@ -182,6 +207,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.McAnsLabel,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 checkAns(myAns, ans)
                   ? {
                       color: '#B5CD33',
@@ -196,6 +224,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
                   style={[
                     styles.McAnsText,
                     {marginLeft: DeviceInfo.isTablet() ? 15 : 8},
+                    correction && checkAns(modelAns, ans)
+                      ? {color: MYCOLOR.lightRed}
+                      : {},
                     checkAns(myAns, ans)
                       ? {
                           color: '#B5CD33',
@@ -211,7 +242,13 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
               <View style={styles.FractionContainer}>
                 <Fraction
                   ReadOnly={ReadOnly}
-                  color={checkAns(myAns, ans) ? '#B5CD33' : undefined}
+                  color={
+                    checkAns(myAns, ans)
+                      ? '#B5CD33'
+                      : correction && checkAns(modelAns, ans)
+                      ? MYCOLOR.lightRed
+                      : undefined
+                  }
                   fillings={{food: [ans]}}
                   bold
                 />
@@ -221,6 +258,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
                 <QuestionText
                   style={[
                     styles.McAnsText,
+                    correction && checkAns(modelAns, ans)
+                      ? {color: MYCOLOR.lightRed}
+                      : {},
                     checkAns(myAns, ans)
                       ? {
                           color: '#B5CD33',
@@ -250,6 +290,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             style={[
               styles.LabelContainer,
               styles.FracContainer,
+              correction && checkAns(modelAns, ans)
+                ? {borderColor: MYCOLOR.lightRed}
+                : {},
               checkAns(myAns, ans)
                 ? {
                     borderColor: '#B5CD33',
@@ -269,6 +312,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.McAnsLabel,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 checkAns(myAns, ans)
                   ? {
                       color: '#B5CD33',
@@ -283,6 +329,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
                   <QuestionText
                     style={[
                       styles.McAnsText,
+                      correction && checkAns(modelAns, ans)
+                        ? {color: MYCOLOR.lightRed}
+                        : {},
                       checkAns(myAns, ans)
                         ? {
                             color: '#B5CD33',
@@ -300,7 +349,13 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
                 ) : ans[key].denominator ? (
                   <Fraction
                     ReadOnly={ReadOnly}
-                    color={checkAns(myAns, ans) ? '#B5CD33' : undefined}
+                    color={
+                      checkAns(myAns, ans)
+                        ? '#B5CD33'
+                        : correction && checkAns(modelAns, ans)
+                        ? MYCOLOR.lightRed
+                        : undefined
+                    }
                     fillings={{food: [ans[key]]}}
                     bold
                   />
@@ -308,6 +363,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
                   <QuestionText
                     style={[
                       styles.McAnsText,
+                      correction && checkAns(modelAns, ans)
+                        ? {color: MYCOLOR.lightRed}
+                        : {},
                       checkAns(myAns, ans)
                         ? {
                             color: '#B5CD33',
@@ -343,6 +401,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             style={[
               styles.LabelContainer,
               styles.StringPigContainer,
+              correction && modelAns.img === ans.img
+                ? {borderColor: MYCOLOR.lightRed}
+                : {},
               myAns?.img === ans.img
                 ? {
                     borderColor: '#B5CD33',
@@ -362,6 +423,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.StringPigAnsLabel,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 myAns === ans
                   ? {
                       color: '#B5CD33',
@@ -375,6 +439,9 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
             <Text
               style={[
                 styles.McAnsText,
+                correction && checkAns(modelAns, ans)
+                  ? {color: MYCOLOR.lightRed}
+                  : {},
                 myAns === ans
                   ? {
                       color: '#B5CD33',
@@ -383,62 +450,6 @@ export const MCAns: React.FC<IMcAns> = ({filling, ReadOnly, condition}) => {
               ]}>
               {ans.string}
             </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    );
-  } else if (type === 'mcStringItalic') {
-    return (
-      <View style={styles.MCAnsContainer}>
-        {ansArray.map((ans: ISpecialString, index: number) => (
-          <TouchableOpacity
-            disabled={ReadOnly}
-            style={[
-              styles.LabelContainer,
-              styles.BoxContainer,
-              myAns === ans
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
-            ]}
-            key={index.toString() + ans}
-            onPress={() => {
-              setMyAns(ans);
-              filling.ans = ans;
-              // if this is the top part of conditioner
-              // set the Dummy useStat to a random number for refreshing the dom
-              if (condition) {
-                condition(Math.random());
-              }
-            }}>
-            <Text
-              style={[
-                styles.McAnsLabel,
-                myAns === ans
-                  ? {
-                      color: '#B5CD33',
-                    }
-                  : {},
-              ]}>
-              {LabelMap[index]}
-            </Text>
-            <View style={styles.mcTextContainer}>
-              <QuestionText
-                style={[
-                  styles.McAnsText,
-                  myAns === ans
-                    ? {
-                        color: '#B5CD33',
-                      }
-                    : {},
-                ]}
-                specialChracterIndex={ans.indexes}
-                specialStyle={specialStyle(ans.type)}
-                WithinOneLine>
-                {ans.food}
-              </QuestionText>
-            </View>
           </TouchableOpacity>
         ))}
       </View>

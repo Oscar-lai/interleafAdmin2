@@ -19,6 +19,7 @@ interface IMixed {
   ReadOnly: boolean;
   condition?: (n: number) => void;
   modelAns?: boolean;
+  correction?: boolean;
 }
 
 export const Mixed: React.FC<IMixed> = ({
@@ -26,6 +27,7 @@ export const Mixed: React.FC<IMixed> = ({
   ReadOnly,
   condition,
   modelAns,
+  correction,
 }) => {
   const bread_temp = sandwich.bread;
   const fillings = sandwich.fillings;
@@ -77,6 +79,7 @@ export const Mixed: React.FC<IMixed> = ({
             condition={condition}
             key={ID + index}
             filling={fillings[++fillingCounter]}
+            correction={correction}
           />
         ),
       )}
@@ -89,6 +92,7 @@ interface IFilling {
   ReadOnly: boolean;
   condition?: (n: number) => void;
   modelAns: boolean;
+  correction?: boolean;
 }
 
 const MyFilling: React.FC<IFilling> = ({
@@ -96,6 +100,7 @@ const MyFilling: React.FC<IFilling> = ({
   ReadOnly,
   condition,
   modelAns,
+  correction,
 }) => {
   let formattedFilling = <></>;
 
@@ -105,11 +110,7 @@ const MyFilling: React.FC<IFilling> = ({
   let fiBInputWidthFactor = DeviceInfo.isTablet() ? 60 : 40;
 
   // return nth instantly if it is mc type stuff
-  if (
-    filling.type === 'mcBox' ||
-    filling.type === 'mcPig' ||
-    filling.type === 'mcStringPig'
-  ) {
+  if (filling.type.includes('mc') && filling.type !== 'mcSlash') {
     return <></>;
   }
 
@@ -211,6 +212,9 @@ const MyFilling: React.FC<IFilling> = ({
               <TouchableOpacity
                 style={[
                   styles.McSlashLabel,
+                  correction && filling.modelAns === ans
+                    ? {borderColor: MYCOLOR.lightRed}
+                    : {},
                   ans === myAns
                     ? {borderColor: modelAns ? MYCOLOR.lightRed : '#B5CD33'}
                     : {},
@@ -227,6 +231,9 @@ const MyFilling: React.FC<IFilling> = ({
                   style={[
                     styles.TextAnsContainer,
                     {marginVertical: 0},
+                    correction && filling.modelAns === ans
+                      ? {color: MYCOLOR.lightRed}
+                      : {},
                     ans === myAns
                       ? {color: modelAns ? MYCOLOR.lightRed : '#B5CD33'}
                       : {},

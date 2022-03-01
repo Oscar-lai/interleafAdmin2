@@ -129,6 +129,7 @@ const InfiniteInputUnordered: React.FC<IInfiniteInputItem> = ({filling}) => {
           ]}
           key={i}
           value={myAns[i] ? myAns[i] : ''}
+          maxLength={length}
           onChangeText={text => {
             const ans = text;
             if (i === myAns.length) {

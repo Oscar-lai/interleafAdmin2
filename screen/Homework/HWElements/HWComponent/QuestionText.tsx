@@ -41,12 +41,10 @@ const QuestionText: React.FC<IQuestionText> = ({
   const [textWidth, setTextWidth] = useState<number>(0);
   const onLayout = event => {
     const {width} = event.nativeEvent.layout;
-    console.log('container', width);
     setContainerWidth(width);
   };
   const onLayout_text = event => {
     const {width} = event.nativeEvent.layout;
-    console.log('text', width);
     setTextWidth(width);
   };
 
