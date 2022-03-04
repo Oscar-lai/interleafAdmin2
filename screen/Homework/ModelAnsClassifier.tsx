@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     width: widthPercentageToDP('100%'),
     flexDirection: 'column',
     alignItems: 'center',
-    paddingHorizontal: 40,
+    paddingHorizontal: DeviceInfo.isTablet() ? '7%' : '10%',
   },
   // specifically for String Frac when elements align in row but not column
   containerMcStringFrac: {

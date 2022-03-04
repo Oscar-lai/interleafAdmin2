@@ -19,6 +19,7 @@ import {Straight} from './HWElements/Straight';
 import Table from './HWElements/Table';
 import {TakePhotoDisplay} from './HWElements/TakePhotoDisplay';
 import DeviceInfo from 'react-native-device-info';
+import QuestionText from './HWElements/HWComponent/QuestionText';
 
 interface IClassifier {
   sandwich: Sandwich;
@@ -27,6 +28,7 @@ interface IClassifier {
   condition?: (n: number) => void;
   ReadOnly: boolean;
   navigation: any;
+  correction?: boolean;
 }
 
 const Classifier: React.FC<IClassifier> = ({
@@ -36,6 +38,7 @@ const Classifier: React.FC<IClassifier> = ({
   ReadOnly,
   condition,
   navigation,
+  correction,
 }) => {
   let formattedLine = <></>;
 
@@ -72,6 +75,19 @@ const Classifier: React.FC<IClassifier> = ({
       );
       break;
     }
+    case 'oneLine': {
+      formattedLine = (
+        <View style={[styles.Container]}>
+          <QuestionText
+            style={styles.QuestionText}
+            containerStyle={{justifyContent: 'center'}}
+            WithinOneLine>
+            {Object.values(sandwich.bread)[0]}
+          </QuestionText>
+        </View>
+      );
+      break;
+    }
     case 'mixed': {
       formattedLine = (
         <View style={styles.Container}>
@@ -100,12 +116,14 @@ const Classifier: React.FC<IClassifier> = ({
             condition={condition}
             ReadOnly={ReadOnly}
             sandwich={sandwich}
+            correction={correction}
           />
           <MCAns
             // condition is a dummy setState function for refreshing the conditioner dom
             condition={condition}
             ReadOnly={ReadOnly}
             filling={ansObject}
+            correction={correction}
           />
         </View>
       );
