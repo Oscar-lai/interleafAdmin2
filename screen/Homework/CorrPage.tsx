@@ -163,7 +163,7 @@ const CorrPage: React.FC<CorrPageProps> = ({navigation, route}) => {
                   <View style={styles.ListItem}>
                     <CorrDisplay
                       sandwiches={item.sandwiches}
-                      correct={false}
+                      correct
                       Qindex={index}
                       type={qTypes[index]}
                     />

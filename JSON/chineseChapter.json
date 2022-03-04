@@ -2801,7 +2801,7 @@
                     "prerequisite": [
                         "05a-02-01"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 },
                 {
                     "id": "05a-02-03",
@@ -2813,7 +2813,7 @@
                     "prerequisite": [
                         "05a-02-02"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 },
                 {
                     "id": "05a-02-04",
@@ -2825,7 +2825,7 @@
                     "prerequisite": [
                         "05a-02-03"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         },
@@ -2881,7 +2881,7 @@
                     "prerequisite": [
                         "05a-03-03"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         },
@@ -3089,7 +3089,7 @@
                     "prerequisite": [
                         "05b-03-03"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         },
@@ -3109,18 +3109,6 @@
                     "term": "b",
                     "timeline": 1,
                     "prerequisite": null,
-                    "allCamera": false
-                },
-                {
-                    "id": "05b-04-02",
-                    "topic": "05b-04",
-                    "chineseName": "製作複合棒形圖",
-                    "level": 5,
-                    "term": "b",
-                    "timeline": 2,
-                    "prerequisite": [
-                        "05b-04-01"
-                    ],
                     "allCamera": false
                 }
             ]
@@ -3221,7 +3209,7 @@
                     "prerequisite": [
                         "05b-06-03"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         }
@@ -3477,18 +3465,6 @@
                     "timeline": 1,
                     "prerequisite": null,
                     "allCamera": false
-                },
-                {
-                    "id": "06a-06-02",
-                    "topic": "06a-06",
-                    "chineseName": "製作複合棒形圖",
-                    "level": 6,
-                    "term": "a",
-                    "timeline": 2,
-                    "prerequisite": [
-                        "06a-06-01"
-                    ],
-                    "allCamera": false
                 }
             ]
         },
@@ -3632,7 +3608,7 @@
                     "prerequisite": [
                         "06b-03-01"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         },
@@ -3652,18 +3628,6 @@
                     "term": "b",
                     "timeline": 1,
                     "prerequisite": null,
-                    "allCamera": false
-                },
-                {
-                    "id": "06b-04-02",
-                    "topic": "06b-04",
-                    "chineseName": "製作折線圖",
-                    "level": 6,
-                    "term": "b",
-                    "timeline": 2,
-                    "prerequisite": [
-                        "06b-04-01"
-                    ],
                     "allCamera": false
                 }
             ]
@@ -3698,7 +3662,7 @@
                     "prerequisite": [
                         "06b-02-01"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 },
                 {
                     "id": "06b-05-03",
@@ -3710,7 +3674,7 @@
                     "prerequisite": [
                         "06b-02-02"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 },
                 {
                     "id": "06b-05-04",
@@ -3722,7 +3686,7 @@
                     "prerequisite": [
                         "06b-02-03"
                     ],
-                    "allCamera": false
+                    "allCamera": true
                 }
             ]
         }

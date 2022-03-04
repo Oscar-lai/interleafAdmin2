@@ -278,8 +278,10 @@ const StraightInputBox: React.FC<IStraightInputs> = ({
   );
 
   useEffect(() => {
-    setMyAns('');
-    filling.ans = '';
+    if (!ReadOnly) {
+      setMyAns('');
+      filling.ans = '';
+    }
   }, [clearIndicator]);
 
   return (
@@ -320,8 +322,10 @@ const SmallStraightInputBox: React.FC<ISmallStraightInputs> = ({
   const [myAns, setMyAns] = useState(ans);
 
   useEffect(() => {
-    setMyAns('');
-    filling.ans = '';
+    if (!ReadOnly) {
+      setMyAns('');
+      filling.ans = '';
+    }
   }, [clearIndicator]);
 
   return (
@@ -385,8 +389,10 @@ const OperatorInput: React.FC<IStraightInputs> = ({
   const [myAns, setMyAns] = useState(ans);
 
   useEffect(() => {
-    setMyAns('');
-    filling.ans = '';
+    if (!ReadOnly) {
+      setMyAns('');
+      filling.ans = '';
+    }
   }, [clearIndicator]);
 
   return (

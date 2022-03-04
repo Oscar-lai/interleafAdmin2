@@ -45,13 +45,12 @@ const CorrDisplay: React.FC<ICorrDisplay> = ({
               index={Qindex}
               key={nanoid + index.toString()}
               sandwich={line}
-              ReadOnly
               navigation={{}}
               correction
             />
           ))}
         </View>
-        {!correct && !onlyMC && (
+        {!onlyMC && (
           <View style={styles.modelAnsWrapper}>
             <View style={styles.modelAnsInnerWrapper}>
               <Text style={styles.SuggerstAnsText}>建議答案：</Text>

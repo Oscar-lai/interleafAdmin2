@@ -1,4 +1,3 @@
-// import {HWQ} from '../hooks/useHWQ';
 import {normalQ} from '../hooks/useHWQ';
 
 export default function addQuestionType(wholeQuestion: normalQ) {
