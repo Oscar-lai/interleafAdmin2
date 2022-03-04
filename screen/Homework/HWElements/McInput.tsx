@@ -14,7 +14,7 @@ import Fraction from './Fraction';
 import DeviceInfo from 'react-native-device-info';
 import QuestionText from './HWComponent/QuestionText';
 import {checkAns} from '../../../helper/checkAns';
-import {MYCOLOR} from '../../../theme/typography';
+import {MYCOLOR, myFont} from '../../../theme/typography';
 
 interface IMcAns {
   filling: Filling;
@@ -338,7 +338,10 @@ export const MCAns: React.FC<IMcAns> = ({
                           }
                         : {},
                     ]}
-                    specialStyle={{fontSize: DeviceInfo.isTablet() ? 37 : 26}}
+                    specialStyle={{
+                      fontFamily: myFont.GEN,
+                      fontSize: DeviceInfo.isTablet() ? 30 : 22,
+                    }}
                     containerStyle={
                       index2 === 0
                         ? {marginLeft: DeviceInfo.isTablet() ? 15 : 8}

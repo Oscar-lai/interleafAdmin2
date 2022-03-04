@@ -172,7 +172,7 @@ const MyFilling: React.FC<IFilling> = ({
               styles.FibTextInput,
               {
                 width: Math.ceil(length / 2) * fiBInputWidthFactor,
-                maxWidth: '90%',
+                maxWidth: '80%',
               },
               modelAns ? {color: MYCOLOR.lightRed} : {},
             ]}

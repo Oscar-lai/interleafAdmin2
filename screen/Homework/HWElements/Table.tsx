@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
-import {MYCOLOR} from '../../../theme/typography';
+import {MYCOLOR, myFont} from '../../../theme/typography';
 import DeviceInfo from 'react-native-device-info';
 
 interface TableProps {
@@ -29,7 +29,7 @@ const Table: React.FC<TableProps> = ({sandwich, ReadOnly, modelAns}) => {
   return (
     <ScrollView
       style={{
-        marginTop: DeviceInfo.isTablet() ? 20 : 15,
+        marginTop: DeviceInfo.isTablet() ? 20 : 10,
       }}
       horizontal
       showsHorizontalScrollIndicator={false}>
@@ -80,33 +80,35 @@ const Table: React.FC<TableProps> = ({sandwich, ReadOnly, modelAns}) => {
             />
           ))}
         </View>
-        {ansRow2 && (
-          <View style={styles.TableRowContainer}>
-            {ansRow2.map((ansItem: any, index: number) => (
-              <TableItem
-                modelAns={modelAns ?? false}
-                ReadOnly={ReadOnly}
-                key={index}
-                top
-                index={index}
-                ansItem={ansItem}
-                otherAnsItem={titleRow[index]}
-                otherFill={
-                  titleRow[index] === ''
-                    ? sandwich.fillings[++lowerCounter]
-                    : null
-                }
-                fill={ansItem === '' ? sandwich.fillings[++counter] : {}}
-                otherAnsItem2={ansRow[index]}
-                otherFill2={
-                  ansRow[index] === ''
-                    ? sandwich.fillings[++lowerCounter2]
-                    : null
-                }
-              />
-            ))}
-          </View>
-        )}
+        <View style={styles.TableRowContainer}>
+          {ansRow2 && (
+            <View style={styles.TableRowContainer}>
+              {ansRow2.map((ansItem: any, index: number) => (
+                <TableItem
+                  modelAns={modelAns ?? false}
+                  ReadOnly={ReadOnly}
+                  key={index}
+                  top
+                  index={index}
+                  ansItem={ansItem}
+                  otherAnsItem={titleRow[index]}
+                  otherFill={
+                    titleRow[index] === ''
+                      ? sandwich.fillings[++lowerCounter]
+                      : null
+                  }
+                  fill={ansItem === '' ? sandwich.fillings[++counter] : {}}
+                  otherAnsItem2={ansRow[index]}
+                  otherFill2={
+                    ansRow[index] === ''
+                      ? sandwich.fillings[++lowerCounter2]
+                      : null
+                  }
+                />
+              ))}
+            </View>
+          )}
+        </View>
       </View>
     </ScrollView>
   );
@@ -180,7 +182,9 @@ const TableItem: React.FC<ITableItem> = ({
         style={[
           styles.TableItemInput,
           modelAns ? {color: MYCOLOR.lightRed} : {},
-          {width: length * 18 + 6},
+          DeviceInfo.isTablet()
+            ? {width: length * 35 + 10}
+            : {width: length * 18 + 6},
         ]}
         value={Ans}
         editable={!ReadOnly}
@@ -188,6 +192,11 @@ const TableItem: React.FC<ITableItem> = ({
           setAns(e.target.value);
           fill.ans = e.target.value;
         }}
+        maxLength={
+          fill.type === 'chineseNumber' || fill.type === 'text'
+            ? 1000
+            : fill.length
+        }
       />
     );
   }
@@ -221,21 +230,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   TableItemInput: {
     height: DeviceInfo.isTablet() ? 50 : 28,
     width: 1,
-    lineHeight: DeviceInfo.isTablet() ? 50 : 28,
-    color: '#F8F8F8',
+    // lineHeight: DeviceInfo.isTablet() ? 50 : 28,
+    color: '#707070',
     backgroundColor: 'transparent',
     borderWidth: DeviceInfo.isTablet() ? 2 : 1,
     borderColor: '#D2D2D2',
-    fontSize: DeviceInfo.isTablet() ? 26 : 16,
+    fontSize: DeviceInfo.isTablet() ? 28 : 16,
+    fontFamily: myFont.GEN,
     textAlign: 'center',
     padding: 0,
     margin: 0,
     flexShrink: 0,
+    paddingVertical: DeviceInfo.isTablet() ? 10 : 5,
   },
   TableItemText: {
     height: DeviceInfo.isTablet() ? 50 : 28,

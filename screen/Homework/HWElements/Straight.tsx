@@ -2,11 +2,13 @@ import {transform} from '@babel/core';
 import {customAlphabet} from 'nanoid/non-secure';
 import React, {Fragment, useEffect, useMemo, useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {TextInput} from 'react-native-gesture-handler';
+import {TextInput, TouchableOpacity} from 'react-native-gesture-handler';
 import {Filling, Sandwich} from '../../../hooks/useHWQ';
 import {MYCOLOR} from '../../../theme/typography';
 import DeviceInfo from 'react-native-device-info';
 import deviceInfoModule from 'react-native-device-info';
+import Icon from 'react-native-vector-icons/Ionicons';
+Icon.loadFont();
 
 interface IStraight {
   sandwich: Sandwich;
@@ -31,6 +33,9 @@ export const Straight: React.FC<IStraight> = ({
 
   const spacesTemp = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   const [spaces, setSpaces] = useState<number[]>(spacesTemp);
+
+  // use for telling all the child to clear their state
+  const [ClearDataDummy, setClearDataDummy] = useState<number>(0);
 
   const [id] = useState(
     customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 16),
@@ -73,6 +78,7 @@ export const Straight: React.FC<IStraight> = ({
                         modelAns={modelAns ?? false}
                         ReadOnly={ReadOnly}
                         filling={filling[++fillingCounter]}
+                        clearIndicator={ClearDataDummy}
                       />
                     ) : (
                       // else display the actual value of item
@@ -159,22 +165,26 @@ export const Straight: React.FC<IStraight> = ({
                                 spaces={spaces}
                                 setSpaces={setSpaces}
                                 index={index}
+                                clearIndicator={ClearDataDummy}
                               />
                             </View>
                           ) : (
-                            // else display the actual value of item
-                            <Text
-                              style={[
-                                styles.StraightText,
-                                bread[breadCounter][index] === '.'
-                                  ? {
-                                      marginHorizontal: -4,
-                                      width: 12,
-                                    }
-                                  : {},
-                              ]}>
-                              {a}
-                            </Text>
+                            // else display the actual value of item one by one
+                            [...Array(a.length)].map((x, index) => (
+                              <Text
+                                key={index}
+                                style={[
+                                  styles.StraightText,
+                                  bread[breadCounter][index] === '.'
+                                    ? {
+                                        marginHorizontal: -4,
+                                        width: 12,
+                                      }
+                                    : {},
+                                ]}>
+                                {a[index]}
+                              </Text>
+                            ))
                           )}
                         </React.Fragment>
                       ),
@@ -191,6 +201,7 @@ export const Straight: React.FC<IStraight> = ({
                   modelAns={modelAns ?? false}
                   ReadOnly={ReadOnly}
                   filling={filling[++fillingCounter]}
+                  clearIndicator={ClearDataDummy}
                 />
               ) : (
                 <Text
@@ -216,6 +227,20 @@ export const Straight: React.FC<IStraight> = ({
           </View>
         ))}
       </View>
+      {!ReadOnly && (
+        <TouchableOpacity
+          style={styles.clearButtonWrapper}
+          onPress={() => {
+            setClearDataDummy(ClearDataDummy + 1);
+            setSpaces(spacesTemp);
+          }}>
+          <Icon
+            name="trash-bin"
+            color={MYCOLOR.lightRed}
+            size={DeviceInfo.isTablet() ? 40 : 27}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -224,6 +249,7 @@ interface IStraightInputs {
   filling: Filling;
   ReadOnly: boolean;
   modelAns: boolean;
+  clearIndicator: number;
 }
 
 interface ISmallStraightInputs {
@@ -233,12 +259,14 @@ interface ISmallStraightInputs {
   spaces: number[];
   setSpaces: (n: number[]) => void;
   index: number;
+  clearIndicator: number;
 }
 
 const StraightInputBox: React.FC<IStraightInputs> = ({
   filling,
   ReadOnly,
   modelAns,
+  clearIndicator,
 }) => {
   const [myWidth, setMyWidth] = useState<string>('46px');
   const ans = modelAns ? filling.modelAns ?? '' : filling.ans ?? '';
@@ -248,6 +276,11 @@ const StraightInputBox: React.FC<IStraightInputs> = ({
   const [id] = useState(
     customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 16),
   );
+
+  useEffect(() => {
+    setMyAns('');
+    filling.ans = '';
+  }, [clearIndicator]);
 
   return (
     <TextInput
@@ -272,6 +305,7 @@ const SmallStraightInputBox: React.FC<ISmallStraightInputs> = ({
   spaces,
   setSpaces,
   index,
+  clearIndicator,
 }) => {
   const ans = modelAns ? filling.modelAns ?? '' : filling.ans ?? '';
 
@@ -284,6 +318,11 @@ const SmallStraightInputBox: React.FC<ISmallStraightInputs> = ({
   }
 
   const [myAns, setMyAns] = useState(ans);
+
+  useEffect(() => {
+    setMyAns('');
+    filling.ans = '';
+  }, [clearIndicator]);
 
   return (
     // <View
@@ -340,9 +379,15 @@ const OperatorInput: React.FC<IStraightInputs> = ({
   filling,
   ReadOnly,
   modelAns,
+  clearIndicator,
 }) => {
   const ans = modelAns ? filling.modelAns ?? '' : filling.ans ?? '';
   const [myAns, setMyAns] = useState(ans);
+
+  useEffect(() => {
+    setMyAns('');
+    filling.ans = '';
+  }, [clearIndicator]);
 
   return (
     <TextInput
@@ -397,8 +442,8 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   BigStraightWrapper: {
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'flex-end',
     justifyContent: 'center',
     width: '100%',
     marginTop: DeviceInfo.isTablet() ? 30 : 15,
@@ -416,7 +461,6 @@ const styles = StyleSheet.create({
     marginBottom: DeviceInfo.isTablet() ? 15 : 10,
     position: 'relative',
     width: 'auto',
-    // backgroundColor:'gray'
   },
   Operator: {
     position: 'absolute',
@@ -490,5 +534,12 @@ const styles = StyleSheet.create({
   },
   DummySpace: {
     height: DeviceInfo.isTablet() ? 55 : 36,
+  },
+  clearButtonWrapper: {
+    width: DeviceInfo.isTablet() ? 50 : 30,
+    height: DeviceInfo.isTablet() ? 50 : 30,
+    marginLeft: DeviceInfo.isTablet() ? 40 : 30,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
 });

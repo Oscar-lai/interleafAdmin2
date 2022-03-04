@@ -39,11 +39,11 @@ const QuestionText: React.FC<IQuestionText> = ({
   //WithinOneLine - measure width
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const [textWidth, setTextWidth] = useState<number>(0);
-  const onLayout = event => {
+  const onLayout = (event: {nativeEvent: {layout: {width: any}}}) => {
     const {width} = event.nativeEvent.layout;
     setContainerWidth(width);
   };
-  const onLayout_text = event => {
+  const onLayout_text = (event: {nativeEvent: {layout: {width: any}}}) => {
     const {width} = event.nativeEvent.layout;
     setTextWidth(width);
   };
@@ -68,7 +68,7 @@ const QuestionText: React.FC<IQuestionText> = ({
       setTextFont(textTemp);
       setSpecialFont(specialTemp);
     }
-  }, [textWidth, containerWidth]);
+  }, [textWidth, containerWidth, WithinOneLine, textFont, specialFont]);
 
   return (
     <View
