@@ -68,7 +68,7 @@ const QuestionText: React.FC<IQuestionText> = ({
       setTextFont(textTemp);
       setSpecialFont(specialTemp);
     }
-  }, [textWidth, containerWidth, WithinOneLine, textFont, specialFont]);
+  }, [textWidth, containerWidth]);
 
   return (
     <View
@@ -88,7 +88,8 @@ const QuestionText: React.FC<IQuestionText> = ({
                 WithinOneLine
                   ? {fontSize: special(string, index) ? specialFont : textFont}
                   : {},
-              ]}>
+              ]}
+              key={index}>
               &nbsp;
             </Text>
           ) : (
@@ -99,7 +100,8 @@ const QuestionText: React.FC<IQuestionText> = ({
                 WithinOneLine
                   ? {fontSize: special(string, index) ? specialFont : textFont}
                   : {},
-              ]}>
+              ]}
+              key={index}>
               {string}
             </Text>
           ),
