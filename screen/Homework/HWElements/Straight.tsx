@@ -350,8 +350,20 @@ const SmallStraightInputBox: React.FC<ISmallStraightInputs> = ({
         myAns === '.'
           ? {
               width: DeviceInfo.isTablet() ? 12 : 8,
-              marginRight: DeviceInfo.isTablet() ? -18 : -12,
-              marginLeft: DeviceInfo.isTablet() ? -2 : 0,
+              marginRight: ReadOnly
+                ? DeviceInfo.isTablet()
+                  ? -4
+                  : -4
+                : DeviceInfo.isTablet()
+                ? -18
+                : -12,
+              marginLeft: ReadOnly
+                ? DeviceInfo.isTablet()
+                  ? -6
+                  : -4
+                : DeviceInfo.isTablet()
+                ? -2
+                : 0,
             }
           : {},
       ]}
