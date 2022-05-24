@@ -24,6 +24,7 @@
     "react-native-device-info": "^8.4.9",
     "react-native-gesture-handler": "^2.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
+    "react-native-linear-gradient": "^2.5.6",
     "react-native-permissions": "^3.2.0",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^3.3.2",
