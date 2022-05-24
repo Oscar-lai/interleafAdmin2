@@ -55,6 +55,42 @@ export const MCAns: React.FC<IMcAns> = ({
     customAlphabet('abcdefghijklmnopqrstuvwxyz0123456789', 16),
   );
 
+  function mcColoring(ans: any, border: boolean) {
+    if (!correction) {
+      if (checkAns(myAns, ans)) {
+        return border
+          ? {borderColor: MYCOLOR.mcGreen}
+          : {color: MYCOLOR.mcGreen};
+      }
+    } else {
+      if (checkAns(modelAns, ans)) {
+        return border
+          ? {borderColor: MYCOLOR.mcGreen}
+          : {color: MYCOLOR.mcGreen};
+      } else if (checkAns(myAns, ans)) {
+        return border
+          ? {borderColor: MYCOLOR.whiteSmoke}
+          : {color: MYCOLOR.whiteSmoke};
+      }
+    }
+    return {};
+  }
+
+  function mcColoring_string(ans: any) {
+    if (!correction) {
+      if (checkAns(myAns, ans)) {
+        return MYCOLOR.mcGreen;
+      }
+    } else {
+      if (checkAns(modelAns, ans)) {
+        return MYCOLOR.mcGreen;
+      } else if (checkAns(myAns, ans)) {
+        return MYCOLOR.whiteSmoke;
+      }
+    }
+    return undefined;
+  }
+
   const LabelMap = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
 
   if (type === 'mcPig') {
@@ -66,14 +102,7 @@ export const MCAns: React.FC<IMcAns> = ({
             style={[
               styles.LabelContainer,
               styles.PigContainer,
-              correction && modelAns === ans
-                ? {borderColor: MYCOLOR.lightRed}
-                : {},
-              myAns === ans
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
+              mcColoring(ans, true),
             ]}
             key={index.toString() + ans}
             onPress={() => {
@@ -88,15 +117,8 @@ export const MCAns: React.FC<IMcAns> = ({
             <Text
               style={[
                 styles.McAnsLabel,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                myAns === ans
-                  ? {
-                      color: '#B5CD33',
-                      marginRight: 0,
-                    }
-                  : {marginRight: 0},
+                mcColoring(ans, false),
+                {marginRight: 0},
               ]}>
               {LabelMap[index]}
             </Text>
@@ -114,14 +136,7 @@ export const MCAns: React.FC<IMcAns> = ({
             style={[
               styles.LabelContainer,
               styles.BoxContainer,
-              correction && checkAns(modelAns, ans)
-                ? {borderColor: MYCOLOR.lightRed}
-                : {},
-              checkAns(myAns, ans)
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
+              mcColoring(ans, true),
             ]}
             key={index.toString() + ans}
             onPress={() => {
@@ -133,33 +148,12 @@ export const MCAns: React.FC<IMcAns> = ({
                 condition(Math.random());
               }
             }}>
-            <Text
-              style={[
-                styles.McAnsLabel,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                checkAns(myAns, ans)
-                  ? {
-                      color: '#B5CD33',
-                    }
-                  : {},
-              ]}>
+            <Text style={[styles.McAnsLabel, mcColoring(ans, false)]}>
               {LabelMap[index]}
             </Text>
             <View style={styles.mcTextContainer}>
               <QuestionText
-                style={[
-                  styles.McAnsText,
-                  correction && checkAns(modelAns, ans)
-                    ? {color: MYCOLOR.lightRed}
-                    : {},
-                  checkAns(myAns, ans)
-                    ? {
-                        color: '#B5CD33',
-                      }
-                    : {},
-                ]}
+                style={[styles.McAnsText, mcColoring(ans, false)]}
                 specialChracterIndex={
                   typeof ans === 'object' ? ans.indexes : undefined
                 }
@@ -185,14 +179,7 @@ export const MCAns: React.FC<IMcAns> = ({
             style={[
               styles.LabelContainer,
               styles.FracContainer,
-              correction && checkAns(modelAns, ans)
-                ? {borderColor: MYCOLOR.lightRed}
-                : {},
-              checkAns(myAns, ans)
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
+              mcColoring(ans, true),
             ]}
             key={index.toString() + ans}
             onPress={() => {
@@ -204,18 +191,7 @@ export const MCAns: React.FC<IMcAns> = ({
                 condition(Math.random());
               }
             }}>
-            <Text
-              style={[
-                styles.McAnsLabel,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                checkAns(myAns, ans)
-                  ? {
-                      color: '#B5CD33',
-                    }
-                  : {},
-              ]}>
+            <Text style={[styles.McAnsLabel, mcColoring(ans, false)]}>
               {LabelMap[index]}
             </Text>
             {typeof ans === 'string' ? (
@@ -224,14 +200,7 @@ export const MCAns: React.FC<IMcAns> = ({
                   style={[
                     styles.McAnsText,
                     {marginLeft: DeviceInfo.isTablet() ? 15 : 8},
-                    correction && checkAns(modelAns, ans)
-                      ? {color: MYCOLOR.lightRed}
-                      : {},
-                    checkAns(myAns, ans)
-                      ? {
-                          color: '#B5CD33',
-                        }
-                      : {},
+                    mcColoring(ans, false),
                   ]}
                   numberOfLines={1}
                   adjustsFontSizeToFit>
@@ -242,13 +211,7 @@ export const MCAns: React.FC<IMcAns> = ({
               <View style={styles.FractionContainer}>
                 <Fraction
                   ReadOnly={ReadOnly}
-                  color={
-                    checkAns(myAns, ans)
-                      ? '#B5CD33'
-                      : correction && checkAns(modelAns, ans)
-                      ? MYCOLOR.lightRed
-                      : undefined
-                  }
+                  color={mcColoring_string(ans)}
                   fillings={{food: [ans]}}
                   bold
                 />
@@ -256,17 +219,7 @@ export const MCAns: React.FC<IMcAns> = ({
             ) : (
               <View style={styles.mcTextContainer}>
                 <QuestionText
-                  style={[
-                    styles.McAnsText,
-                    correction && checkAns(modelAns, ans)
-                      ? {color: MYCOLOR.lightRed}
-                      : {},
-                    checkAns(myAns, ans)
-                      ? {
-                          color: '#B5CD33',
-                        }
-                      : {},
-                  ]}
+                  style={[styles.McAnsText, mcColoring(ans, false)]}
                   containerStyle={{
                     marginLeft: DeviceInfo.isTablet() ? 15 : 8,
                   }}
@@ -290,14 +243,7 @@ export const MCAns: React.FC<IMcAns> = ({
             style={[
               styles.LabelContainer,
               styles.FracContainer,
-              correction && checkAns(modelAns, ans)
-                ? {borderColor: MYCOLOR.lightRed}
-                : {},
-              checkAns(myAns, ans)
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
+              mcColoring(ans, true),
             ]}
             key={index.toString() + ans}
             onPress={() => {
@@ -309,35 +255,14 @@ export const MCAns: React.FC<IMcAns> = ({
                 condition(Math.random());
               }
             }}>
-            <Text
-              style={[
-                styles.McAnsLabel,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                checkAns(myAns, ans)
-                  ? {
-                      color: '#B5CD33',
-                    }
-                  : {},
-              ]}>
+            <Text style={[styles.McAnsLabel, mcColoring(ans, false)]}>
               {LabelMap[index]}
             </Text>
             {Object.keys(ans).map((key: any, index2: number) => (
               <View style={styles.FractionContainer} key={index + index2 + id}>
                 {typeof ans[key] === 'string' ? (
                   <QuestionText
-                    style={[
-                      styles.McAnsText,
-                      correction && checkAns(modelAns, ans)
-                        ? {color: MYCOLOR.lightRed}
-                        : {},
-                      checkAns(myAns, ans)
-                        ? {
-                            color: '#B5CD33',
-                          }
-                        : {},
-                    ]}
+                    style={[styles.McAnsText, mcColoring(ans, false)]}
                     specialStyle={{
                       fontFamily: myFont.GEN,
                       fontSize: DeviceInfo.isTablet() ? 30 : 22,
@@ -352,29 +277,13 @@ export const MCAns: React.FC<IMcAns> = ({
                 ) : ans[key].denominator ? (
                   <Fraction
                     ReadOnly={ReadOnly}
-                    color={
-                      checkAns(myAns, ans)
-                        ? '#B5CD33'
-                        : correction && checkAns(modelAns, ans)
-                        ? MYCOLOR.lightRed
-                        : undefined
-                    }
+                    color={mcColoring_string(ans)}
                     fillings={{food: [ans[key]]}}
                     bold
                   />
                 ) : (
                   <QuestionText
-                    style={[
-                      styles.McAnsText,
-                      correction && checkAns(modelAns, ans)
-                        ? {color: MYCOLOR.lightRed}
-                        : {},
-                      checkAns(myAns, ans)
-                        ? {
-                            color: '#B5CD33',
-                          }
-                        : {},
-                    ]}
+                    style={[styles.McAnsText, mcColoring(ans, false)]}
                     containerStyle={
                       index2 === 0
                         ? {marginLeft: DeviceInfo.isTablet() ? 15 : 8}
@@ -404,14 +313,7 @@ export const MCAns: React.FC<IMcAns> = ({
             style={[
               styles.LabelContainer,
               styles.StringPigContainer,
-              correction && modelAns.img === ans.img
-                ? {borderColor: MYCOLOR.lightRed}
-                : {},
-              myAns?.img === ans.img
-                ? {
-                    borderColor: '#B5CD33',
-                  }
-                : {},
+              mcColoring(ans, true),
             ]}
             key={index.toString() + ans}
             onPress={() => {
@@ -426,31 +328,13 @@ export const MCAns: React.FC<IMcAns> = ({
             <Text
               style={[
                 styles.StringPigAnsLabel,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                myAns === ans
-                  ? {
-                      color: '#B5CD33',
-                      marginRight: 0,
-                    }
-                  : {marginRight: 0},
+                mcColoring(ans, false),
+                {marginRight: 0},
               ]}>
               {LabelMap[index]}
             </Text>
             <MCImageDisplay url={ans.img} />
-            <Text
-              style={[
-                styles.McAnsText,
-                correction && checkAns(modelAns, ans)
-                  ? {color: MYCOLOR.lightRed}
-                  : {},
-                myAns === ans
-                  ? {
-                      color: '#B5CD33',
-                    }
-                  : {},
-              ]}>
+            <Text style={[styles.McAnsText, mcColoring(ans, false)]}>
               {ans.string}
             </Text>
           </TouchableOpacity>

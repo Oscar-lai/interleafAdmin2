@@ -1,7 +1,17 @@
-import React, {useRef} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  DeviceEventEmitter,
+} from 'react-native';
 import {RNCamera} from 'react-native-camera';
 import {myFont} from '../../../theme/typography';
+import Icon from 'react-native-vector-icons/Feather';
+
+Icon.loadFont();
+
+import DeviceInfo from 'react-native-device-info';
 
 interface ICamera {
   navigation: any;
@@ -11,6 +21,21 @@ const Camera: React.FC<ICamera> = ({navigation, route}) => {
   const CameraRef = useRef<RNCamera>(null);
 
   const setPic = route.params?.setPic;
+
+  //For detecting the orientation of the camera
+  const [orientation, setOrientation] = useState('PORTRAIT');
+  function handleOrientationDidChange(data) {
+    if (data.isLandscape && orientation === 'PORTRAIT') {
+      setOrientation('LANDSCAPE');
+    }
+    if (!data.isLandscape && orientation === 'LANDSCAPE') {
+      setOrientation('PORTRAIT');
+    }
+  }
+  DeviceEventEmitter.addListener(
+    'namedOrientationDidChange',
+    handleOrientationDidChange,
+  );
 
   const takePicture = async () => {
     if (CameraRef.current) {
@@ -24,6 +49,26 @@ const Camera: React.FC<ICamera> = ({navigation, route}) => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity
+        style={[
+          styles.back,
+          orientation === 'PORTRAIT'
+            ? {
+                left: DeviceInfo.isTablet() ? '8%' : '5%',
+                top: DeviceInfo.isTablet() ? '5%' : '3%',
+              }
+            : {
+                top: DeviceInfo.isTablet() ? '8%' : '5%',
+                right: DeviceInfo.isTablet() ? '5%' : '3%',
+              },
+        ]}
+        onPress={() => navigation.goBack()}>
+        <Icon
+          name="x"
+          style={styles.cross}
+          size={DeviceInfo.isTablet() ? 70 : 40}
+        />
+      </TouchableOpacity>
       <RNCamera
         ref={CameraRef}
         style={styles.preview}
@@ -44,7 +89,7 @@ const Camera: React.FC<ICamera> = ({navigation, route}) => {
       />
       <View style={{flex: 0, flexDirection: 'row', justifyContent: 'center'}}>
         <TouchableOpacity onPress={takePicture} style={styles.capture}>
-          <Text style={styles.snapText}>拍照</Text>
+          {/* <Text style={styles.snapText}>拍照</Text> */}
         </TouchableOpacity>
       </View>
     </View>
@@ -66,16 +111,32 @@ const styles = StyleSheet.create({
   },
   capture: {
     flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
+    height: DeviceInfo.isTablet() ? 100 : 55,
+    width: DeviceInfo.isTablet() ? 100 : 55,
+    borderRadius: DeviceInfo.isTablet() ? 50 : 50,
+    borderWidth: DeviceInfo.isTablet() ? 10 : 5,
+    borderColor: '#fff',
+    // padding: 15,
+    // paddingHorizontal: 20,
     alignSelf: 'center',
-    margin: 20,
+    margin: 25,
+    zIndex: 5000,
   },
   snapText: {
     fontSize: 14,
     fontFamily: myFont.GEN,
     color: '#707070',
+  },
+  back: {
+    position: 'absolute',
+    // left: DeviceInfo.isTablet() ? '8%' : '5%',
+    // top: DeviceInfo.isTablet() ? '5%' : '3%',
+    zIndex: 5000,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  cross: {
+    color: '#fff',
   },
 });

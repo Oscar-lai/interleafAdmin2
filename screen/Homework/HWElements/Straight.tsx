@@ -122,7 +122,7 @@ export const Straight: React.FC<IStraight> = ({
                                 bread[breadCounter][index] === '.'
                                   ? {
                                       marginHorizontal: -6,
-                                      width: 12,
+                                      width: DeviceInfo.isTablet() ? 20 : 12,
                                     }
                                   : {},
                               ]}
@@ -177,8 +177,8 @@ export const Straight: React.FC<IStraight> = ({
                                   styles.StraightText,
                                   bread[breadCounter][index] === '.'
                                     ? {
-                                        marginHorizontal: -4,
-                                        width: 12,
+                                        marginHorizontal: -6,
+                                        width: DeviceInfo.isTablet() ? 20 : 12,
                                       }
                                     : {},
                                 ]}>
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     letterSpacing: 6,
     color: '#707070',
     fontFamily: 'Poppins-Bold',
-    textAlign: 'right',
+    textAlign: 'center',
   },
   StraightLineDisplay: {
     flexDirection: 'row',

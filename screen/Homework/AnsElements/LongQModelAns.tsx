@@ -1,6 +1,7 @@
 import {customAlphabet} from 'nanoid/non-secure';
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {Filling} from '../../../hooks/useHWQ';
 import {MYCOLOR, myFont} from '../../../theme/typography';
 import Fraction from '../HWElements/Fraction';
@@ -60,82 +61,92 @@ export const LongQModelAns: React.FC<{filling: Filling}> = ({filling}) => {
 
   return (
     <ScrollView
-      directionalLockEnabled
       style={styles.LongQModelAnsContainer}
       contentContainerStyle={{
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+        width: '100%',
       }}>
       {Array.isArray(modelAns) &&
         modelAns.map((ans, index: number) => (
-          <React.Fragment key={index + id}>
-            <View style={styles.bitTextContainer}>
-              {typeof ans === 'string' ? (
-                checkEquation(ans) ? (
-                  splitEquation(ans).map((e: any, eIndex: number) => (
-                    <View
-                      style={
-                        eIndex !== 1
-                          ? {
-                              width: myWidth,
-                              alignItems:
-                                eIndex === 0 ? 'flex-end' : 'flex-start',
-                            }
-                          : {}
-                      }>
-                      <Text style={styles.LongQAnsText}>{e}</Text>
-                    </View>
-                  ))
-                ) : (
-                  <Text style={styles.LongQAnsText}>{ans}</Text>
-                )
-              ) : checkEquation(ans) ? (
+          <ScrollView
+            key={index + id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            nestedScrollEnabled
+            contentContainerStyle={{
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+            }}
+            style={styles.bitTextContainer}>
+            {typeof ans === 'string' ? (
+              checkEquation(ans) ? (
                 splitEquation(ans).map((e: any, eIndex: number) => (
                   <View
-                    style={[
-                      {flexDirection: 'row', alignItems: 'center'},
+                    style={
                       eIndex !== 1
                         ? {
                             width: myWidth,
-                            justifyContent:
+                            alignItems:
                               eIndex === 0 ? 'flex-end' : 'flex-start',
                           }
-                        : {},
-                    ]}>
-                    {Object.keys(e).map((key: any, index2: number) => (
-                      <React.Fragment key={index + index2 + id}>
-                        {typeof e[key] === 'string' ? (
-                          <Text style={styles.LongQAnsText}>{e[key]}</Text>
-                        ) : (
-                          <Fraction
-                            color={MYCOLOR.lightRed}
-                            modelAns
-                            ReadOnly
-                            fillings={{food: [e[key]]}}
-                          />
-                        )}
-                      </React.Fragment>
-                    ))}
+                        : {}
+                    }
+                    key={eIndex}>
+                    <Text style={styles.LongQAnsText}>{e}</Text>
                   </View>
                 ))
               ) : (
-                Object.keys(ans).map((key: any, index2: number) => (
-                  <React.Fragment key={index + index2 + id}>
-                    {typeof ans[key] === 'string' ? (
-                      <Text style={styles.LongQAnsText}>{ans[key]}</Text>
-                    ) : (
-                      <Fraction
-                        color={MYCOLOR.lightRed}
-                        modelAns
-                        ReadOnly
-                        fillings={{food: [ans[key]]}}
-                      />
-                    )}
-                  </React.Fragment>
-                ))
-              )}
-            </View>
-          </React.Fragment>
+                <Text style={styles.LongQAnsText}>{ans}</Text>
+              )
+            ) : checkEquation(ans) ? (
+              splitEquation(ans).map((e: any, eIndex: number) => (
+                <View
+                  style={[
+                    {flexDirection: 'row', alignItems: 'center'},
+                    eIndex !== 1
+                      ? {
+                          width: myWidth,
+                          justifyContent:
+                            eIndex === 0 ? 'flex-end' : 'flex-start',
+                        }
+                      : {},
+                  ]}
+                  key={eIndex}>
+                  {Object.keys(e).map((key: any, index2: number) => (
+                    <React.Fragment key={index + index2 + id}>
+                      {typeof e[key] === 'string' ? (
+                        <Text style={styles.LongQAnsText}>{e[key]}</Text>
+                      ) : (
+                        <Fraction
+                          color={MYCOLOR.lightRed}
+                          modelAns
+                          ReadOnly
+                          fillings={{food: [e[key]]}}
+                        />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </View>
+              ))
+            ) : (
+              Object.keys(ans).map((key: any, index2: number) => (
+                <React.Fragment key={index + index2 + id}>
+                  {typeof ans[key] === 'string' ? (
+                    <Text style={styles.LongQAnsText}>{ans[key]}</Text>
+                  ) : (
+                    <Fraction
+                      color={MYCOLOR.lightRed}
+                      modelAns
+                      ReadOnly
+                      fillings={{food: [ans[key]]}}
+                    />
+                  )}
+                </React.Fragment>
+              ))
+            )}
+          </ScrollView>
         ))}
     </ScrollView>
   );
@@ -146,7 +157,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'transparent',
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
   },
   LongQAnsText: {
     fontSize: DeviceInfo.isTablet() ? 26 : 18,
@@ -156,7 +167,7 @@ const styles = StyleSheet.create({
     height: DeviceInfo.isTablet() ? 40 : 25,
     lineHeight: DeviceInfo.isTablet() ? 40 : 25,
     margin: 0,
-    flexWrap: 'wrap',
+    // flexWrap: 'wrap',
     fontFamily: myFont.GEN,
   },
   textContatiner: {
@@ -165,10 +176,7 @@ const styles = StyleSheet.create({
     marginVertical: DeviceInfo.isTablet() ? 8 : 6,
   },
   bitTextContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
+    width: '90%',
     marginVertical: DeviceInfo.isTablet() ? 8 : 6,
   },
   equationContainer: {

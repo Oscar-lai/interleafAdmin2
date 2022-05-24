@@ -12,7 +12,7 @@ interface IBarChart {
 }
 
 const BarChartY: React.FC<IBarChart> = ({sandwich, ReadOnly, modelAns}) => {
-  let legendXWidth = DeviceInfo.isTablet() ? 40 : 25;
+  let legendXWidth = DeviceInfo.isTablet() ? 50 : 25;
   let legendYHeight = DeviceInfo.isTablet() ? 40 : 24;
   let yAxisThick = DeviceInfo.isTablet() ? 3 : 2;
 
@@ -365,9 +365,9 @@ const styles = StyleSheet.create({
   },
   YLabelText: {
     textAlign: 'center',
-    height: DeviceInfo.isTablet() ? 40 : 28,
+    height: DeviceInfo.isTablet() ? 50 : 28,
     width: DeviceInfo.isTablet() ? 150 : 50,
-    color: '#000',
+    color: '#707070',
     backgroundColor: 'transparent',
     fontSize: DeviceInfo.isTablet() ? 26 : 16,
     fontFamily: myFont.GEN,
@@ -396,9 +396,9 @@ const styles = StyleSheet.create({
   },
   XLabelText: {
     textAlign: 'center',
-    height: DeviceInfo.isTablet() ? 40 : 28,
+    height: DeviceInfo.isTablet() ? 50 : 28,
     width: DeviceInfo.isTablet() ? 150 : 100,
-    lineHeight: DeviceInfo.isTablet() ? 40 : 28,
+    // lineHeight: DeviceInfo.isTablet() ? 40 : 28,
     color: '#707070',
     backgroundColor: 'transparent',
     fontSize: DeviceInfo.isTablet() ? 26 : 16,
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   YLegendInputBox: {
     textAlign: 'center',
     height: DeviceInfo.isTablet() ? 40 : 24,
-    width: DeviceInfo.isTablet() ? 75 : 40,
+    width: DeviceInfo.isTablet() ? 60 : 40,
     marginHorizontal: DeviceInfo.isTablet() ? 7 : 3,
     color: '#707070',
     fontFamily: myFont.GEN,
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
   YLegendText: {
     // height: DeviceInfo.isTablet() ? 40 : 24,
     marginHorizontal: DeviceInfo.isTablet() ? 7 : 3,
-    lineHeight: DeviceInfo.isTablet() ? 40 : 24,
+    // lineHeight: DeviceInfo.isTablet() ? 40 : 24,
     fontSize: DeviceInfo.isTablet() ? 24 : 14,
     width: DeviceInfo.isTablet() ? 75 : 40,
     color: '#707070',
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     color: '#707070',
     backgroundColor: '#FFF',
     borderRadius: DeviceInfo.isTablet() ? 10 : 7,
-    fontSize: DeviceInfo.isTablet() ? 22 : 14,
+    fontSize: DeviceInfo.isTablet() ? 18 : 14,
     textAlign: 'center',
     shadowColor: '#707070',
     shadowOffset: {
@@ -458,9 +458,9 @@ const styles = StyleSheet.create({
     height: DeviceInfo.isTablet() ? 30 : 20,
     // width: DeviceInfo.isTablet() ? 40 : 30,
     fontFamily: myFont.GEN,
-    lineHeight: DeviceInfo.isTablet() ? 30 : 28,
+    // lineHeight: DeviceInfo.isTablet() ? 30 : 28,
     color: '#707070',
-    fontSize: DeviceInfo.isTablet() ? 22 : 14,
+    fontSize: DeviceInfo.isTablet() ? 18 : 14,
     textAlign: 'center',
   },
   YLegendDummy: {

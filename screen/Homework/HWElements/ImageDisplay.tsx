@@ -132,12 +132,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e1e4e8',
     width: '100%',
-    height: DeviceInfo.isTablet() ? 400 : 250,
+    height: DeviceInfo.isTablet() ? 470 : 300,
     // marginTop: DeviceInfo.isTablet() ? 30 : 15,
     zIndex: 100,
   },
   image: {
     height: DeviceInfo.isTablet() ? 400 : 250,
+    marginHorizontal: DeviceInfo.isTablet() ? 40 : 20,
+    marginVertical: DeviceInfo.isTablet() ? 35 : 25,
   },
   ResContainer: {
     backgroundColor: '#e1e4e8',
@@ -178,9 +180,9 @@ const styles = StyleSheet.create({
   },
   crossIcon: {
     position: 'absolute',
-    bottom: 0,
-    right: -10,
+    bottom: 10,
+    right: 10,
     color: MYCOLOR.whiteSmoke,
-    zIndex: 0,
+    zIndex: 5000,
   },
 });

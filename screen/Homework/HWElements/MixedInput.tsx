@@ -388,10 +388,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   FractionContainer: {
-    height: 70,
-    lineHeight: 70,
+    height: DeviceInfo.isTablet() ? 95 : 75,
+    lineHeight: DeviceInfo.isTablet() ? 95 : 75,
     alignItems: 'center',
     justifyContent: 'center',
+    // marginVertical: DeviceInfo.isTablet() ? 0 : 5,
   },
   titleContainer: {
     width: '100%',

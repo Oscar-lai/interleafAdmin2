@@ -128,6 +128,10 @@ const SmallDivisionInput: React.FC<IDivisionInputBox> = ({
   const ans = modelAns ? fill.modelAns ?? '' : fill.ans ?? '';
   const [myAns, setMyAns] = useState(ans);
 
+  if (ans === '') {
+    fill.ans = '';
+  }
+
   return (
     <TextInput
       style={[
@@ -156,6 +160,10 @@ const InfiniteDivisionInput: React.FC<IDivisionInputBox> = ({
 }) => {
   const ans = modelAns ? fill.modelAns ?? [] : fill.ans ?? [];
   const [myAns, setMyAns] = useState<DivisionAns>(ans);
+
+  if (ans === []) {
+    fill.ans = [];
+  }
 
   const NumOfLayers = ReadOnly
     ? Object.keys(myAns).length

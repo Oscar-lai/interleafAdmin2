@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
+import {StyleSheet, Text, View, TextInput} from 'react-native';
+import {ScrollView} from 'react-native-gesture-handler';
 import {MYCOLOR, myFont} from '../../../theme/typography';
 import DeviceInfo from 'react-native-device-info';
 
@@ -32,6 +33,7 @@ const Table: React.FC<TableProps> = ({sandwich, ReadOnly, modelAns}) => {
         marginTop: DeviceInfo.isTablet() ? 20 : 10,
       }}
       horizontal
+      nestedScrollEnabled
       showsHorizontalScrollIndicator={false}>
       <View style={styles.TableWrapper}>
         <View style={styles.TableRowContainer}>
@@ -188,9 +190,9 @@ const TableItem: React.FC<ITableItem> = ({
         ]}
         value={Ans}
         editable={!ReadOnly}
-        onChange={(e: any) => {
-          setAns(e.target.value);
-          fill.ans = e.target.value;
+        onChangeText={(e: any) => {
+          setAns(e);
+          fill.ans = e;
         }}
         maxLength={
           fill.type === 'chineseNumber' || fill.type === 'text'

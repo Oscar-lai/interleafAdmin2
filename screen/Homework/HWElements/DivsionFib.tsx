@@ -204,6 +204,10 @@ const SmallDivisionInput: React.FC<IDivisionInputBox> = ({
   const ans = modelAns ? fill.modelAns ?? '' : fill.ans ?? '';
   const [myAns, setMyAns] = useState(ans);
 
+  if (ans === '') {
+    fill.ans = '';
+  }
+
   return (
     <TextInput
       style={[
@@ -273,9 +277,7 @@ const styles = StyleSheet.create({
     borderRightColor: '#707070',
     borderBottomRightRadius: DeviceInfo.isTablet() ? 20 : 12,
     paddingHorizontal: DeviceInfo.isTablet() ? 8 : 5,
-    marginRight: -2,
-    marginTop: -2,
-    paddingVertical: DeviceInfo.isTablet() ? 5 : 0,
+    marginRight: DeviceInfo.isTablet() ? -5 : -3,
   },
   DivisionText: {
     margin: DeviceInfo.isTablet() ? 10 : 5,
