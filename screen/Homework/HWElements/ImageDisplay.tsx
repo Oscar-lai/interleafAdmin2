@@ -19,6 +19,7 @@ interface IImageDisplay {
 
 export const ImageDisplay: React.FC<IImageDisplay> = ({imgURL, type, zoom}) => {
   const urlTemp = imgURL[0];
+  console.log(urlTemp);
 
   const [URL, setURL] = useState<string>('');
   const [AspectRatio, setAspectRatio] = useState(0);
@@ -36,7 +37,7 @@ export const ImageDisplay: React.FC<IImageDisplay> = ({imgURL, type, zoom}) => {
           error => console.error(error),
         );
         setURL(url);
-        console.log(url);
+        console.log('real url is: ' + url);
       }
     });
     return () => {

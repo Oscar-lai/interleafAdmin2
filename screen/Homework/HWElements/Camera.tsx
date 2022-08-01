@@ -24,7 +24,7 @@ const Camera: React.FC<ICamera> = ({navigation, route}) => {
 
   //For detecting the orientation of the camera
   const [orientation, setOrientation] = useState('PORTRAIT');
-  function handleOrientationDidChange(data) {
+  function handleOrientationDidChange(data: { isLandscape: any; }) {
     if (data.isLandscape && orientation === 'PORTRAIT') {
       setOrientation('LANDSCAPE');
     }
@@ -41,8 +41,8 @@ const Camera: React.FC<ICamera> = ({navigation, route}) => {
     if (CameraRef.current) {
       const options = {quality: 0.5, base64: true};
       const data = await CameraRef.current.takePictureAsync(options);
-      console.log(data.uri);
-      setPic(data.uri);
+      console.log(data.base64);
+      setPic(data.base64);
       navigation.goBack();
     }
   };

@@ -3,15 +3,13 @@ import {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {normalQ} from './useHWQ';
 
-const useChapterQ = (chapterCode: string, tut: string): normalQ[] => {
+
+const useTutQ = (tut: string, setsId: string): normalQ[] => {
   const [Q, setQ] = useState<normalQ[]>([]);
 
   useEffect(() => {
-    let path = tut
-      ? `customQuestion/${tut}/questions/${chapterCode}/dish`
-      : `questions/${chapterCode}/dish`;
     const unsubscribe = firestore()
-      .collection(path)
+      .collection(`customQuestion/${tut}/questions/${setsId}/dish`)
       .onSnapshot(
         snapshot => {
           let temp: normalQ[] = [];
@@ -41,4 +39,4 @@ const useChapterQ = (chapterCode: string, tut: string): normalQ[] => {
   return Q;
 };
 
-export default useChapterQ;
+export default useTutQ;

@@ -9,6 +9,7 @@ import {useSafeAreaFrame} from 'react-native-safe-area-context';
 import DeviceInfo from 'react-native-device-info';
 
 import checkEquation, {splitEquation} from '../../../helper/checkEuqation';
+import { LongQStraightClassifier } from './LongQStraightClassifier';
 
 export const LongQModelAns: React.FC<{filling: Filling}> = ({filling}) => {
   const modelAns = filling.modelAns;
@@ -130,6 +131,8 @@ export const LongQModelAns: React.FC<{filling: Filling}> = ({filling}) => {
                   ))}
                 </View>
               ))
+            ) : 'type' in ans ? (
+              <LongQStraightClassifier sandwich={ans} />
             ) : (
               Object.keys(ans).map((key: any, index2: number) => (
                 <React.Fragment key={index + index2 + id}>

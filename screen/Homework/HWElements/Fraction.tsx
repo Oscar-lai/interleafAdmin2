@@ -140,6 +140,7 @@ const Fraction: React.FC<FractionProps> = ({
               fill={sub_fillings[++sub_fillings_counter]}
               modelAns={modelAns ?? false}
               bold={bold}
+              int
             />
           )}
         </View>
@@ -338,6 +339,7 @@ interface IFractionInput {
   modelAns: boolean;
   ReadOnly: boolean;
   bold?: boolean;
+  int?: boolean;
 }
 
 const FractionInput: React.FC<IFractionInput> = ({
@@ -345,8 +347,13 @@ const FractionInput: React.FC<IFractionInput> = ({
   modelAns,
   ReadOnly,
   bold,
+  int,
 }) => {
   const ans = modelAns ? fill.modelAns ?? '' : fill.ans ?? '';
+  
+  if (int) {
+    fill.ans = '';
+  }
 
   const [myAns, setMyAns] = useState(ans);
 
@@ -360,6 +367,7 @@ const FractionInput: React.FC<IFractionInput> = ({
         {width: fill.length * inputWidthFactor},
         modelAns ? {color: MYCOLOR.lightRed} : {},
         bold ? {fontFamily: 'Poppins-Bold'} : {},
+        int ? {opacity: myAns === '' ? 0.4 : 1} : {},
       ]}
       maxLength={fill.length}
       value={myAns}

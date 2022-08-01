@@ -52,7 +52,6 @@ interface ITermListScreen {
 }
 
 const TermListScreen: React.FC<ITermListScreen> = function ({navigation}) {
-
   return (
     <Screen>
       <FlatList

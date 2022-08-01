@@ -26,6 +26,7 @@ import addQuestionType from '../../helper/questionType';
 Icon2.loadFont();
 
 import firestore from '@react-native-firebase/firestore';
+import useTutQ from '../../hooks/useTutQ';
 
 interface CorrPageProps {
   navigation: any;
@@ -36,7 +37,10 @@ const CorrPage: React.FC<CorrPageProps> = ({navigation, route}) => {
   const chapter = route.params.chapter;
   const chapterName = route.params.chineseName;
 
-  const QList = useChapterQ(chapter);
+  const tut = route.params.tut ?? '';
+
+  const QList = useChapterQ(chapter, tut);
+
   const qStatus = QList.map(element => {
     return element.checked;
   });
@@ -62,12 +66,10 @@ const CorrPage: React.FC<CorrPageProps> = ({navigation, route}) => {
 
   //after pressing button
   async function nextQ(thisQ: number, qid: string, checking: boolean) {
-    await firestore()
-      .collection('questions')
-      .doc(chapter)
-      .collection('dish')
-      .doc(qid)
-      .update({checked: checking});
+    let path = tut
+      ? `customQuestion/${tut}/questions/${chapter}/dish/${qid}`
+      : `questions/${chapter}/dish/${qid}`;
+    await firestore().doc(path).update({checked: checking});
     if (thisQ < QList.length - 1) {
       ScrollToQ(currQ + 1);
     }

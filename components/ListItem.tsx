@@ -3,12 +3,14 @@ import {View, StyleSheet, TouchableWithoutFeedback} from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {MYCOLOR} from '../theme/typography';
 import AppText from './AppText';
+import DeviceInfo from 'react-native-device-info';
 
 interface IListItem {
   onPress: any;
   title: string;
   subtitle: string;
   icon?: boolean;
+  grey?: boolean;
 }
 
 const ListItem: React.FC<IListItem> = function ({
@@ -16,15 +18,29 @@ const ListItem: React.FC<IListItem> = function ({
   title,
   subtitle,
   icon,
+  grey,
 }) {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <AppText style={{fontSize: 20, marginBottom: 1}}>{title}</AppText>
-          <AppText>{subtitle}</AppText>
+          <AppText
+            style={[
+              {
+                fontSize: DeviceInfo.isTablet() ? 28 : 20,
+                marginBottom: 1,
+              },
+              grey ? {color: MYCOLOR.whiteSmoke} : {},
+            ]}>
+            {title}
+          </AppText>
+          <AppText style={grey ? {color: MYCOLOR.whiteSmoke} : {}}>
+            {subtitle}
+          </AppText>
         </View>
-        {icon && <Icon color={MYCOLOR.whiteSmoke} name="chevron-right" size={50} />}
+        {icon && (
+          <Icon color={MYCOLOR.whiteSmoke} name="chevron-right" size={50} />
+        )}
       </View>
     </TouchableWithoutFeedback>
   );

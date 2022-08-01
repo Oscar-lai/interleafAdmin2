@@ -21,8 +21,13 @@ import Table from './HWElements/Table';
 import DeviceInfo from 'react-native-device-info';
 import QuestionText from './HWElements/HWComponent/QuestionText';
 import {specialStyle} from './HWElements/McInput';
+import {ImageDisplay} from './HWElements/ImageDisplay';
 
-export const ModelAnsClassifier: React.FC<any> = props => {
+interface IModalAnsClassifier {
+  sandwich: any;
+}
+
+export const ModelAnsClassifier: React.FC<IModalAnsClassifier> = props => {
   let formattedLine = <></>;
   const sandwich = props.sandwich;
 
@@ -41,6 +46,22 @@ export const ModelAnsClassifier: React.FC<any> = props => {
     }
     case 'img': {
       formattedLine = <></>;
+      break;
+    }
+    case 'imgDrawable': {
+      console.log('im in here wor');
+      const ansURL = sandwich.fillings[0].modelAns;
+      formattedLine = (
+        <View
+          style={[
+            styles.ImageContainer,
+            {
+              backgroundColor: '#FFF',
+            },
+          ]}>
+          <ImageDisplay imgURL={[ansURL]} type="img" />
+        </View>
+      );
       break;
     }
     case 'mc': {
@@ -334,5 +355,11 @@ const styles = StyleSheet.create({
   ansTextContainer_QuestionText: {
     marginVertical: '5%',
     width: '100%',
+  },
+  ImageContainer: {
+    marginTop: DeviceInfo.isTablet() ? 40 : 20,
+    width: '100%',
+    // for making this invisible when img-x / img-y is expanded
+    zIndex: -1,
   },
 });

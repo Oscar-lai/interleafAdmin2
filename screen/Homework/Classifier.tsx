@@ -20,10 +20,15 @@ import Table from './HWElements/Table';
 import {TakePhotoDisplay} from './HWElements/TakePhotoDisplay';
 import DeviceInfo from 'react-native-device-info';
 import QuestionText from './HWElements/HWComponent/QuestionText';
+import {DrawLongQ} from './HWElements/DrawLongQ';
+import {ImageDrawable} from './HWElements/ImageDrawable';
 
 interface IClassifier {
   sandwich: Sandwich;
+  HWid: string;
+  SID: string;
   photo?: string[];
+  imageDrawArray?: {[id: string]: string};
   index?: number;
   condition?: (n: number) => void;
   ReadOnly: boolean;
@@ -33,12 +38,15 @@ interface IClassifier {
 
 const Classifier: React.FC<IClassifier> = ({
   sandwich,
+  HWid,
+  SID,
   index,
   photo,
   ReadOnly,
   condition,
   navigation,
   correction,
+  imageDrawArray = {},
 }) => {
   let formattedLine = <></>;
 
@@ -132,13 +140,22 @@ const Classifier: React.FC<IClassifier> = ({
     case 'longQ': {
       formattedLine = (
         <View style={styles.Container}>
-          <TakePhotoDisplay
-            ReadOnly={ReadOnly}
-            key={index}
-            photo={photo ?? []}
-            index={index ?? 0}
-            navigation={navigation}
-          />
+          {DeviceInfo.isTablet() ? (
+            <DrawLongQ
+              ReadOnly={ReadOnly}
+              key={index}
+              photo={photo ?? []}
+              index={index ?? 0}
+            />
+          ) : (
+            <TakePhotoDisplay
+              ReadOnly={ReadOnly}
+              key={index}
+              photo={photo ?? []}
+              index={index ?? 0}
+              navigation={navigation}
+            />
+          )}
         </View>
       );
       break;
@@ -186,14 +203,32 @@ const Classifier: React.FC<IClassifier> = ({
       formattedLine = (
         <View
           style={[
-            styles.Container,
+            styles.ImageContainer,
             {
-              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
-              paddingVertical: DeviceInfo.isTablet() ? 35 : 25,
               backgroundColor: '#FFF',
             },
           ]}>
           <ImageDisplay imgURL={imgURL} type="img" />
+        </View>
+      );
+      break;
+    }
+    case 'imgDrawable': {
+      formattedLine = (
+        <View
+          style={[
+            styles.ImageContainer,
+            {
+              backgroundColor: '#FFF',
+            },
+          ]}>
+          <ImageDrawable
+            imageDrawArray={imageDrawArray}
+            sandwich={sandwich}
+            ReadOnly={ReadOnly}
+            HWid={HWid}
+            SID={SID}
+          />
         </View>
       );
       break;
@@ -204,10 +239,8 @@ const Classifier: React.FC<IClassifier> = ({
       formattedLine = (
         <View
           style={[
-            styles.Container,
+            styles.ImageContainer,
             {
-              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
-              paddingVertical: DeviceInfo.isTablet() ? 35 : 25,
               backgroundColor: '#FFF',
             },
           ]}>
@@ -221,10 +254,8 @@ const Classifier: React.FC<IClassifier> = ({
       formattedLine = (
         <View
           style={[
-            styles.Container,
+            styles.ImageContainer,
             {
-              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
-              paddingVertical: DeviceInfo.isTablet() ? 20 : 10,
               zIndex: 99,
               backgroundColor: '#FFF',
             },
@@ -239,10 +270,8 @@ const Classifier: React.FC<IClassifier> = ({
       formattedLine = (
         <View
           style={[
-            styles.Container,
+            styles.ImageContainer,
             {
-              paddingHorizontal: DeviceInfo.isTablet() ? 40 : 20,
-              paddingVertical: DeviceInfo.isTablet() ? 20 : 10,
               zIndex: 99,
               backgroundColor: '#FFF',
             },
@@ -337,6 +366,12 @@ const styles = StyleSheet.create({
     marginTop: DeviceInfo.isTablet() ? 40 : 20,
     width: '100%',
     paddingHorizontal: DeviceInfo.isTablet() ? 80 : 40,
+    // for making this invisible when img-x / img-y is expanded
+    zIndex: -1,
+  },
+  ImageContainer: {
+    marginTop: DeviceInfo.isTablet() ? 40 : 20,
+    width: '100%',
     // for making this invisible when img-x / img-y is expanded
     zIndex: -1,
   },

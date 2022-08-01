@@ -1,4 +1,16 @@
-import React, {useState} from 'react';
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+
+/******* LongQ answer now uses WhiteBoard.tsx since 26/5/2022 *******/
+
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+/************************* This Page no longer actively maintain *************************/
+
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -14,7 +26,6 @@ import Icon from 'react-native-vector-icons/Feather';
 import {myFont} from '../../../theme/typography';
 Icon.loadFont();
 import DeviceInfo from 'react-native-device-info';
-
 
 interface ITakePhotoDisplay {
   photo: string[];
@@ -45,6 +56,12 @@ export const TakePhotoDisplay: React.FC<ITakePhotoDisplay> = ({
   }
 
   const [Photo, setPhoto] = useState<string>('');
+
+  useEffect(() => {
+    return () => {
+      console.log('quit jor photo');
+    };
+  }, []);
 
   async function takePhotoHandler() {
     if (platform === 'android') {
@@ -172,7 +189,7 @@ export const TakePhotoDisplay: React.FC<ITakePhotoDisplay> = ({
             resizeMode="contain"
             style={styles.previewPic}
             source={{
-              uri: Photo,
+              uri: `data:image/jpeg;base64,${Photo}`,
             }}
           />
         </TouchableOpacity>
@@ -184,7 +201,11 @@ export const TakePhotoDisplay: React.FC<ITakePhotoDisplay> = ({
           <TouchableOpacity
             onPress={takePhotoHandler}
             style={styles.BoxWrapper}>
-            <Icon name="camera" size={DeviceInfo.isTablet() ? 85 : 60} color="#B2B2B2" />
+            <Icon
+              name="camera"
+              size={DeviceInfo.isTablet() ? 85 : 60}
+              color="#B2B2B2"
+            />
             <Text style={styles.ButtonText}>按此拍照</Text>
           </TouchableOpacity>
         </>

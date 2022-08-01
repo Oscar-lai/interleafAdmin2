@@ -25,6 +25,7 @@ export const MYCOLOR = {
   deepGreen: '#187253',
   lightGreen: '#50BD97',
   superLightGreen: '#92D6BE',
+  mcGreen: '#B5CD33',
 
   mainYellow: '#FFC210',
   deepYellow: '#A9810C',

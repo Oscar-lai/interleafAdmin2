@@ -1,6 +1,7 @@
 import React from 'react';
-import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet, Button} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import {widthPercentageToDP} from 'react-native-responsive-screen';
 import {
   useSafeAreaInsets,
   useSafeAreaFrame,
@@ -8,7 +9,9 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 Icon.loadFont();
 import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import StopTimer from '../../components/StopTimer';
 import {smallDeviceHeight} from '../../DeviceConfig';
+import {HWQ} from '../../hooks/useHWQ';
 Icon2.loadFont();
 
 import {MYCOLOR, myFont} from '../../theme/typography';
@@ -17,10 +20,14 @@ interface IHWBanner {
   focus: any;
   QNum: number;
   goBack: () => void;
-  daysOfDistribution: string;
+  daysOfDistribution?: string;
   backgroundColor?: string; //use background color to indicate it is not a HW banner
   Title?: string;
   HWType?: string;
+  timeLimit?: number;
+  timesUpPensDown?: () => void;
+  ExportPDF: () => void;
+  showPDF?: boolean;
 }
 
 const HWBanner: React.FC<IHWBanner> = ({
@@ -31,6 +38,10 @@ const HWBanner: React.FC<IHWBanner> = ({
   backgroundColor,
   Title,
   HWType,
+  timeLimit,
+  timesUpPensDown,
+  ExportPDF,
+  showPDF,
 }) => {
   const inset = useSafeAreaInsets();
   let {height} = useSafeAreaFrame();
@@ -68,55 +79,78 @@ const HWBanner: React.FC<IHWBanner> = ({
           </Text>
         </TouchableOpacity>
       </View>
-      {Title && <Text style={styles.CorrectText}>{Title}</Text>}
-      <View
-        style={[
-          styles.InfoWrapper,
-          // DeviceInfo.isTablet() ? {width: '40%'} : {flex: 1},
-        ]}>
-        {focus.map((topic: any, index: number) => (
-          <Text
-            numberOfLines={1}
-            style={[
-              styles.TopicText,
-              backgroundColor ? {color: '#FFFFFFB2'} : {},
-              height < smallDeviceHeight ? {fontSize: 17} : {},
-            ]}
-            key={index}>
-            {topic.chineseName}
-          </Text>
-        ))}
-        <View style={styles.InfoDetailWrapper}>
-          <Text
-            style={[
-              styles.DetailText,
-              backgroundColor ? {color: '#FFFFFFB2'} : {},
-              height < smallDeviceHeight ? {fontSize: 10} : {},
-            ]}>
-            {QNum + '題'}
-          </Text>
-          <View style={styles.DateWrapper}>
-            <Icon2
-              name="calendar-month-outline"
+      {timeLimit && timeLimit > 0 ? (
+        <StopTimer
+          limit={timeLimit}
+          timesUpPensDown={timesUpPensDown ? timesUpPensDown : () => {}}
+        />
+      ) : (
+        <></>
+      )}
+      {/* forget wt the below is for lol */}
+      {/* {Title && <Text style={styles.CorrectText}>{Title}</Text>}  */}
+      <View style={styles.RightWrapper}>
+        <View style={[styles.InfoWrapper]}>
+          {focus.map((topic: any, index: number) => (
+            <Text
+              numberOfLines={1}
+              style={[
+                styles.TopicText,
+                backgroundColor ? {color: '#FFFFFFB2'} : {},
+                height < smallDeviceHeight ? {fontSize: 18} : {},
+              ]}
+              key={index}>
+              {topic.chineseName}
+            </Text>
+          ))}
+          <View style={styles.InfoDetailWrapper}>
+            <Text
+              style={[
+                styles.DetailText,
+                backgroundColor ? {color: '#FFFFFFB2'} : {},
+                height < smallDeviceHeight ? {fontSize: 11} : {},
+              ]}>
+              {QNum + '題'}
+            </Text>
+            <View style={styles.DateWrapper}>
+              <Icon2
+                name="calendar-month-outline"
+                size={
+                  DeviceInfo.isTablet()
+                    ? 30
+                    : height < smallDeviceHeight
+                    ? 13
+                    : 20
+                }
+                color={backgroundColor ? '#FFFFFFB2' : '#B2B2B2'}
+              />
+              <Text
+                style={[
+                  styles.DetailText,
+                  backgroundColor ? {color: '#FFFFFFB2'} : {},
+                  height < smallDeviceHeight ? {fontSize: 11} : {},
+                ]}>
+                {daysOfDistribution}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        {showPDF && (
+          <TouchableOpacity onPress={ExportPDF} style={styles.PdfButton}>
+            <Icon
+              name="download"
               size={
                 DeviceInfo.isTablet()
                   ? 30
                   : height < smallDeviceHeight
                   ? 13
-                  : 20
+                  : 24
               }
-              color={backgroundColor ? '#FFFFFFB2' : '#B2B2B2'}
+              color={'#707070'}
             />
-            <Text
-              style={[
-                styles.DetailText,
-                backgroundColor ? {color: '#FFFFFFB2'} : {},
-                height < smallDeviceHeight ? {fontSize: 10} : {},
-              ]}>
-              {daysOfDistribution}
-            </Text>
-          </View>
-        </View>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -135,7 +169,7 @@ const styles = StyleSheet.create({
     paddingVertical: '3%',
   },
   backButtonContainer: {
-    width: '40%',
+    width: '35%',
     alignItems: 'flex-start',
     marginBottom: '3%',
   },
@@ -163,7 +197,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-end',
-    width: '40%',
+    width: widthPercentageToDP(35),
     // backgroundColor: 'black',
   },
   InfoDetailWrapper: {
@@ -173,12 +207,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   TopicText: {
-    fontSize: DeviceInfo.isTablet() ? 35 : 20,
+    fontSize: DeviceInfo.isTablet() ? 35 : 21,
     fontFamily: myFont.GEN,
     color: MYCOLOR.lightGreen,
   },
   DetailText: {
-    fontSize: DeviceInfo.isTablet() ? 25 : 12,
+    fontSize: DeviceInfo.isTablet() ? 25 : 13,
     fontFamily: myFont.GEN,
     color: '#B2B2B2',
   },
@@ -195,5 +229,17 @@ const styles = StyleSheet.create({
     // backgroundColor: 'gray',
     flex: 1,
     textAlign: 'center',
+  },
+  PdfButton: {
+    marginLeft: widthPercentageToDP(2),
+    marginRight: DeviceInfo.isTablet()
+      ? -widthPercentageToDP(2)
+      : -widthPercentageToDP(1),
+  },
+  RightWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    width: widthPercentageToDP(39),
   },
 });
